@@ -181,7 +181,7 @@ int main(void)
 	err = bt_enable(NULL);
 	if (err != 0) {
 		LOG_ERR("Bluetooth init failed (err %d)", err);
-		return err;
+		/* return err; */
 	}
 
 #ifdef CONFIG_HUBBLE_BEACON_SAMPLE_USE_CTS
