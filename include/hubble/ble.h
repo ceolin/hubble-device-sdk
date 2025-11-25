@@ -82,7 +82,7 @@ int hubble_ble_init(uint64_t utc_time, const void *key);
  * @note - This function is neither thread-safe nor reentrant. The caller must
  *         ensure proper synchronization.
  *       - The payload is encrypted using the key set by @ref hubble_ble_key_set
- *       - Legacy packet type (Extended Advertisements not supported)
+ *       - Legacy packet type (Extended Advertisesments not supported)
  *
  * @param input Pointer to the input data.
  * @param input_len Length of the input data.
