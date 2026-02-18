@@ -1,0 +1,15 @@
+# Copyright (c) 2026 Hubble Network, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+cmake_minimum_required(VERSION 3.13.1)
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+
+project(app LANGUAGES C)
+
+target_sources(app PRIVATE src/main.c)
+target_sources(app PRIVATE src/ble.c)
+target_sources(app PRIVATE src/sat.c)
+
+target_sources_ifdef(
+	CONFIG_SAMPLE_PROVIDE_SAT_BOARD_SUPPORT
+	app PRIVATE src/board.c)
