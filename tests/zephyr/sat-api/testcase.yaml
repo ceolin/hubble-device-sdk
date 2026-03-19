@@ -10,6 +10,3 @@ tests:
   satellite.api:
     extra_configs:
       - CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1=y
-  satellite.api.deprecated:
-    extra_configs:
-      - CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED=y

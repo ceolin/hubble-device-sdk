@@ -70,11 +70,6 @@ config HUBBLE_SAT_NETWORK_PROTOCOL_V1
 	   bool "Use V1 protocol"
 	   help
 		First version of Sat protocol. Channel hopping within transmissions.
-
-config HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED
-	   bool "Use deprecated protocol"
-	   help
-		Deprecated version of Sat protocol. No channel hopping during transmissions.
 endchoice
 
 endif

@@ -23,12 +23,6 @@ if(CONFIG_HUBBLE_SAT_NETWORK)
         "${SDK_BASE_DIR}/src/reed_solomon_encoder.c"
     )
 
-    if(CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED)
-        list(APPEND SRCS
-            "${SDK_BASE_DIR}/src/hubble_sat_packet_deprecated.c"
-        )
-    endif()
-
     if(CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1)
         list(APPEND SRCS
             "${SDK_BASE_DIR}/src/hubble_sat_packet.c"

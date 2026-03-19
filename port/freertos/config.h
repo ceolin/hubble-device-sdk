@@ -81,17 +81,10 @@
 
 /* Protocol version
  *
- * Select only one of the following options:
  * - CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1: first version of sat
  * protocol. Channel hopping during transmissions.
- * - CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED: deprecated version
- * of sat protocol. No channel hopping during transmissions.
  */
 #define CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1 1
-#if defined(CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1) &&                          \
-	defined(CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED)
-#error "Only one protocol can be selected"
-#endif
 
 #endif /* CONFIG_HUBBLE_SAT_NETWORK */
 

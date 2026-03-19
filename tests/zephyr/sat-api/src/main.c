@@ -64,21 +64,12 @@ ZTEST(sat_test, test_packet)
 	uint8_t buffer[64] = {0};
 	struct hubble_sat_packet pkt;
 
-	err = hubble_sat_static_device_id_set(HUBBLE_SAT_DEV_ID);
-#ifdef CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED
-	zassert_ok(err);
-#else
-	zassert_equal(err, -ENOSYS);
-#endif
-
 	/* Packet without data is valid */
 	err = hubble_sat_packet_get(&pkt, NULL, 0);
 	zassert_ok(err);
 
 	err = hubble_sat_packet_get(&pkt, buffer, 1);
-#ifdef CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED
-	zassert_ok(err);
-#else
+
 	/* Available sizes are: 0, 4, 9 and 13 (HUBBLE_SAT_PAYLOAD_MAX) */
 	zassert_not_ok(err);
 
@@ -88,7 +79,6 @@ ZTEST(sat_test, test_packet)
 
 	err = hubble_sat_packet_get(&pkt, buffer, 9);
 	zassert_ok(err);
-#endif
 
 	err = hubble_sat_packet_get(&pkt, buffer, HUBBLE_SAT_PAYLOAD_MAX);
 	zassert_ok(err);
@@ -102,13 +92,6 @@ ZTEST(sat_test, test_profile)
 {
 	int err;
 	struct hubble_sat_packet pkt;
-
-	err = hubble_sat_static_device_id_set(HUBBLE_SAT_DEV_ID);
-#ifdef CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED
-	zassert_ok(err);
-#else
-	zassert_equal(err, -ENOSYS);
-#endif
 
 	/* Packet without data is valid */
 	err = hubble_sat_packet_get(&pkt, NULL, 0);

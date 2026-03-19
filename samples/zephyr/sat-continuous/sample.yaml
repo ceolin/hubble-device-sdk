@@ -14,9 +14,6 @@ common:
     - satellite
 tests:
   app.sat.continuous.default: {}
-  app.sat.continuous.deprecated:
-    extra_configs:
-      - CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED=y
   app.sat.continuous.128key:
     extra_configs:
       - CONFIG_HUBBLE_NETWORK_KEY_128=y

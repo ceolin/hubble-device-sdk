@@ -27,18 +27,10 @@ extern "C" {
  */
 
 /* @brief Max number of symbols that packet can have */
-#ifdef CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED
-#define HUBBLE_PACKET_MAX_SIZE 44
-#else /* CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1 */
 #define HUBBLE_PACKET_MAX_SIZE 52
-#endif
 
 /* @brief Max number of bytes for data payload */
-#ifdef CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_DEPRECATED
-#define HUBBLE_SAT_PAYLOAD_MAX 11
-#else /* CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1 */
 #define HUBBLE_SAT_PAYLOAD_MAX 13
-#endif
 
 /**
  * @brief Structure representing a Hubble packet.

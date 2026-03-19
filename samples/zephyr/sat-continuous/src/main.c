@@ -58,9 +58,6 @@ int main(void)
 		goto end;
 	}
 
-	(void)hubble_sat_static_device_id_set(
-		CONFIG_HUBBLE_SAT_SAMPLE_NETWORK_ID);
-
 	for (;;) {
 		err = hubble_sat_packet_get(&pkt, NULL, 0);
 		if (err != 0) {

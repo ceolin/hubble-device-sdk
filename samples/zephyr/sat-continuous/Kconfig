@@ -3,13 +3,6 @@
 
 menu "Hubble Network Satellite Sample options"
 
-
-config HUBBLE_SAT_SAMPLE_NETWORK_ID
-    int "Network ID to be used"
-    default 1337
-    help
-	Set device's network id.
-
 config SAMPLE_PROVIDE_SAT_BOARD_SUPPORT
     bool "Provide satellite board suport for test purpose"
     default y
