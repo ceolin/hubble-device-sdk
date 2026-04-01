@@ -46,6 +46,7 @@ extern "C" {
  *   - The counter increments based on uptime from this initial value
  *   - Useful for resuming from a known state after reboot
  *
+ * @note BIG BIG test
  * @code
  * // Unix Time-based mode example
  * uint64_t unix_time_ms = 1705881600000; // Current Unix Epoch time
