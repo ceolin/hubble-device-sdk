@@ -1,4 +1,4 @@
-name: Build Zephyr Sample Projects
+name: Run tests
 
 on:
   pull_request:
@@ -7,7 +7,8 @@ on:
       - "include/**"
       - "src/**"
       - "samples/zephyr/**"
-      - ".github/workflows/build-samples-zephyr-samples.yml"
+      - "tests/zephyr/**"
+      - ".github/workflows/tests.yaml"
 
   workflow_dispatch:
     inputs:
@@ -72,14 +73,12 @@ jobs:
         with:
           # west.yml lives at the repo root
           app-path: .
-          # We only need the ARM toolchain for nRF52. (nrf52_bsim uses host toolchain.)
-          toolchains: arm-zephyr-eabi
 
       - name: Build zephyr/samples
         run: |
           set -euxo pipefail
           # Build all Zephyr projects in samples/zephyr directory
-          west twister -T samples/zephyr --build-only --footprint-report
+          west twister -T samples/zephyr -T tests/zephyr --footprint-report
 
       - name: Footprint report
         run: |
