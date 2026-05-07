@@ -1,0 +1,26 @@
+%%{
+/*
+ * Copyright (c) 2026 Hubble Network, Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ *  ======== hubble_sdk_sources.c.xdt ========
+ */
+
+    let hubble = system.modules["/Hubble"].$static;
+%%}
+
+% let keys = Object.keys(system.modules).sort();
+% /* loop over all modules in the current configuration */
+% for (let i = 0; i < keys.length; i++) {
+%     let mod = system.modules[keys[i]];
+%     if (mod.getSDKFiles) {
+/* C files contributed by `keys[i]` */
+%         let files = mod.getSDKFiles();
+%         for (let index in files) {
+#include <`files[index]`>
+%         }
+%     }
+% }

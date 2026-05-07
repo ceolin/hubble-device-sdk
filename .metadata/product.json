@@ -1,0 +1,20 @@
+{
+    "name": "Hubble Network SDK",
+    "version": "2.0.0",
+    "displayName": "Hubble SDK",
+    "includePaths": [
+        "../"
+    ],
+    "components": [
+        "/Hubble.component.js"
+    ],
+    "devices": [
+        "CC2[37].*"
+    ],
+    "rtos": [
+        "freertos",
+        "none",
+        "nortos"
+    ],
+    "minToolVersion": "1.26.3"
+}
