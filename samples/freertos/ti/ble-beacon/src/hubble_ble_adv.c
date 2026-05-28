@@ -110,19 +110,19 @@ static void hubble_ble_adv_update(void *arg)
 
 	advData[4] = len + 1; /* output len + BLE service data type */
 
-	if (BLEAppUtil_advStop(bleAdvHandle) != SUCCESS) {
+	if (GapAdv_prepareLoadByHandle(
+		    bleAdvHandle, GAP_ADV_FREE_OPTION_DONT_FREE) != SUCCESS) {
 		Log_printf(LogModule_Beacon, Log_ERROR,
-			   "Failed to stop advertising");
+			   "Failed to prepare adv data load");
 		return;
 	}
 
-	if (BLEAppUtil_initAdvSet(&bleAdvHandle, &hubbleInitAdvSet) != SUCCESS) {
+	if (GapAdv_loadByHandle(bleAdvHandle, GAP_ADV_DATA_TYPE_ADV,
+				sizeof(advData), advData) != SUCCESS) {
 		Log_printf(LogModule_Beacon, Log_ERROR,
-			   "Failed to initialize advertising set");
+			   "Failed to load adv data");
 		return;
 	}
-
-	(void)BLEAppUtil_advStart(bleAdvHandle, &hubbleStartAdvSet);
 
 	Log_printf(LogModule_Beacon, Log_INFO, "Advertise data updated");
 }
