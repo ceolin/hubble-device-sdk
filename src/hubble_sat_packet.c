@@ -181,9 +181,9 @@ static int8_t _packet_payload_size_get(size_t len)
 	return ret;
 }
 
-static uint8_t _packet_phy_size_get(uint8_t pdu_len)
+static int _packet_phy_size_get(size_t pdu_len)
 {
-	uint8_t ret = 0;
+	int ret;
 
 	switch (pdu_len) {
 	case 23:
@@ -198,7 +198,16 @@ static uint8_t _packet_phy_size_get(uint8_t pdu_len)
 	case 46:
 		ret = 0b11;
 		break;
+#ifdef CONFIG_HUBBLE_SAT_NETWORK_DTM_MODE
+	/* DTM single-frame mode uses a sentinel length that has no PHY size
+	 * mapping; the payload is not transmitted, so fall back to 0.
+	 */
+	case HUBBLE_SAT_DTM_PACKET_ONE_FRAME_ONLY_LEN:
+		ret = 0b00;
+		break;
+#endif
 	default:
+		ret = -EINVAL;
 		break;
 	}
 
@@ -344,12 +353,18 @@ int hubble_sat_packet_frames_get(const struct hubble_sat_packet *packet,
 		return _ret;                                                   \
 	}
 
+	/* Validate the packet length (which maps to the PHY payload size field)
+	 * before mutating any channel-hopping state or touching the output.
+	 */
+	ret = _packet_phy_size_get(packet->length);
+	_CHECK_RET(ret);
+
+	phy_len = (uint8_t)ret;
+
 	hop_sequence = _hopping_sequence;
 	channel = _channel_get();
 
 	frames->frame[0].channel = channel;
-
-	phy_len = _packet_phy_size_get(packet->length);
 
 	hubble_bitarray_init(&bit_array);
 	ret = hubble_bitarray_append(
