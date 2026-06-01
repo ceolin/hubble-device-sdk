@@ -62,4 +62,9 @@ ifeq ($(CONFIG_HUBBLE_SAT_NETWORK_PROTOCOL_V1),1)
 HUBBLENETWORK_SDK_SOURCES += $(HUBBLENETWORK_SDK_SRC_DIR)/hubble_sat_packet.c
 endif
 
+# Choose which board to include
+ifneq (,$(findstring -DCC23X0,$(CFLAGS)))
+include $(HUBBLENETWORK_SDK_PORT_DIR)/boards/ti/cc23xx_cc27xx/hubblenetwork-sdk-sat-ti.mk
+endif
+
 endif
