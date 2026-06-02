@@ -92,6 +92,39 @@ uint16_t hubble_sequence_counter_get(void);
 int hubble_log(enum hubble_log_level level, const char *format, ...);
 
 /**
+ * @brief Initialize the internal lock.
+ *
+ * Performs any one-time setup required to use @ref hubble_lock (for example,
+ * creating the underlying mutex on platforms that cannot statically initialize
+ * one). Called by hubble_init() before any locking takes place.
+ *
+ * @return 0 on success, negative error code on failure.
+ */
+int hubble_lock_init(void);
+
+/**
+ * @brief Acquire the internal lock.
+ *
+ * Provides mutual exclusion for the SDK's shared mutable state.
+ *
+ * The locked region includes the call to hubble_sequence_counter_get(), which
+ * may be application-provided and may block (for example, reading or persisting
+ * the counter from flash). The implementation must therefore be a
+ * blocking-capable mutex, NOT a non-blocking critical section such as scheduler
+ * suspension or an interrupt-disabling spinlock. Calls may be nested by the
+ * same execution context, so the mutex must be recursive. Initialized by
+ * @ref hubble_lock_init.
+ */
+void hubble_lock(void);
+
+/**
+ * @brief Release the internal lock.
+ *
+ * Releases a lock previously acquired with @ref hubble_lock.
+ */
+void hubble_unlock(void);
+
+/**
  * @brief Fill a buffer with random bytes.
  *
  * This function fills the provided buffer with random data using the

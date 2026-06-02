@@ -53,8 +53,14 @@ uint64_t hubble_time_get(void)
 
 int hubble_init(uint64_t initial_time, const void *key)
 {
-	int ret = hubble_crypto_init();
+	int ret = hubble_lock_init();
 
+	if (ret != 0) {
+		HUBBLE_LOG_WARNING("Failed to initialize internal lock");
+		return ret;
+	}
+
+	ret = hubble_crypto_init();
 	if (ret != 0) {
 		HUBBLE_LOG_WARNING("Failed to initialize cryptography");
 		return ret;

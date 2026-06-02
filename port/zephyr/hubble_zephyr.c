@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/logging/log_core.h>
 #include <zephyr/logging/log_output.h>
@@ -57,4 +58,22 @@ int hubble_rand_get(uint8_t *buffer, size_t len)
 	sys_rand_get(buffer, len);
 
 	return 0;
+}
+
+/* Recursive mutex: SMP-safe, blocking-capable, and statically initialized. */
+K_MUTEX_DEFINE(_hubble_lock);
+
+int hubble_lock_init(void)
+{
+	return 0;
+}
+
+void hubble_lock(void)
+{
+	(void)k_mutex_lock(&_hubble_lock, K_FOREVER);
+}
+
+void hubble_unlock(void)
+{
+	(void)k_mutex_unlock(&_hubble_lock);
 }

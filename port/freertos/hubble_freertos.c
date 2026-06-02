@@ -6,12 +6,15 @@
 
 #ifdef CONFIG_ESP_IDF_BUILD
 #include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
 #include <freertos/task.h>
 #else
 #include <FreeRTOS.h>
+#include <semphr.h>
 #include <task.h>
 #endif
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -33,6 +36,11 @@
 #elif defined(__GNUC__)
 #define HUBBLE_WEAK __attribute__((weak))
 #endif
+
+/*
+ * Recursive mutex, nested calls by the same task do not deadlock.
+ */
+static SemaphoreHandle_t _hubble_lock_sem;
 
 #ifndef CONFIG_HUBBLE_UPTIME_CUSTOM
 uint64_t hubble_uptime_get(void)
@@ -80,4 +88,26 @@ HUBBLE_WEAK int hubble_rand_get(uint8_t *buffer, size_t len)
 HUBBLE_WEAK int hubble_log(enum hubble_log_level level, const char *format, ...)
 {
 	return 0;
+}
+
+HUBBLE_WEAK int hubble_lock_init(void)
+{
+	if (_hubble_lock_sem == NULL) {
+		_hubble_lock_sem = xSemaphoreCreateRecursiveMutex();
+		if (_hubble_lock_sem == NULL) {
+			return -ENOMEM;
+		}
+	}
+
+	return 0;
+}
+
+HUBBLE_WEAK void hubble_lock(void)
+{
+	(void)xSemaphoreTakeRecursive(_hubble_lock_sem, portMAX_DELAY);
+}
+
+HUBBLE_WEAK void hubble_unlock(void)
+{
+	(void)xSemaphoreGiveRecursive(_hubble_lock_sem);
 }
