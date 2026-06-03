@@ -112,7 +112,7 @@ struct hubble_sat_pass_info {
  * @brief Set orbital information for satellites.
  *
  * This function stores orbital parameters for one or more satellites. The parameters
- * are used by hubble_next_pass_get() and hubble_next_pass_region_get() to compute
+ * are used by hubble_sat_next_pass_get() and hubble_sat_next_pass_region_get() to compute
  * the next satellite pass across all configured satellites.
  *
  * @note The caller must ensure the @p satellites array remains valid for the lifetime
@@ -142,8 +142,8 @@ int hubble_sat_satellites_set(
  * @param pass The next satellite pass in case of success.
  * @return 0 on success or a negative value in case of error.
  */
-int hubble_next_pass_get(uint64_t t, const struct hubble_sat_device_pos *pos,
-			 struct hubble_sat_pass_info *pass);
+int hubble_sat_next_pass_get(uint64_t t, const struct hubble_sat_device_pos *pos,
+			     struct hubble_sat_pass_info *pass);
 
 /**
  * @brief Get the next satellite pass over a geographic region.
@@ -157,9 +157,9 @@ int hubble_next_pass_get(uint64_t t, const struct hubble_sat_device_pos *pos,
  * @param pass The next satellite pass in case of success.
  * @return 0 on success or a negative value in case of error.
  */
-int hubble_next_pass_region_get(uint64_t t,
-				const struct hubble_sat_device_region *region,
-				struct hubble_sat_pass_info *pass);
+int hubble_sat_next_pass_region_get(
+	uint64_t t, const struct hubble_sat_device_region *region,
+	struct hubble_sat_pass_info *pass);
 
 /** @} */
 
