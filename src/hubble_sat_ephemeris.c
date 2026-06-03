@@ -805,8 +805,8 @@ static int _next_pass_culmination_get(
 	return 0;
 }
 
-int hubble_next_pass_get(uint64_t t, const struct hubble_sat_device_pos *pos,
-			 struct hubble_sat_pass_info *pass)
+int hubble_sat_next_pass_get(uint64_t t, const struct hubble_sat_device_pos *pos,
+			     struct hubble_sat_pass_info *pass)
 {
 	struct hubble_sat_pass_info next_pass;
 	double lon_tol, alt = 0.0;
@@ -883,9 +883,9 @@ int hubble_next_pass_get(uint64_t t, const struct hubble_sat_device_pos *pos,
 	return 0;
 }
 
-int hubble_next_pass_region_get(uint64_t t,
-				const struct hubble_sat_device_region *region,
-				struct hubble_sat_pass_info *pass)
+int hubble_sat_next_pass_region_get(
+	uint64_t t, const struct hubble_sat_device_region *region,
+	struct hubble_sat_pass_info *pass)
 {
 	double lon_tol, lat_mid, alt = 0.0;
 	struct crossing_info crossings_min[2], crossings_max[2];
@@ -1028,7 +1028,7 @@ int hubble_next_pass_region_get(uint64_t t,
 
 	pass->duration += transmission_period_s;
 
-	/* Compensate the drift the same way we do on hubble_next_pass_get() */
+	/* Compensate the drift the same way we do on hubble_sat_next_pass_get() */
 	pass->culmination -= hubble_internal_time_drift_get() / 2000U;
 
 	pass->start = pass->culmination - (pass->duration / 2U);
