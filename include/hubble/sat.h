@@ -31,15 +31,37 @@ extern "C" {
  * @brief Satellite transmission mode
  *
  * It tells what is the desired reliability when transmitting
- * a packet. Higher reliability consumes higher power and takes
- * longer because it increases the number of retries.
+ * a packet. Higher reliability consumes higher power because it increases the
+ * number of retries.
+ *
+ * @note The retry counts listed below are baselines. Extra retries are
+ *       added to compensate for the device's clock drift accumulated since
+ *       the last time synchronization: one additional retry is added for
+ *       every full retransmission interval worth of drift. The longer the
+ *       device goes without synchronizing its clock, the more retries are
+ *       performed. Modes with no retries (@ref HUBBLE_SAT_RELIABILITY_NONE)
+ *       are not affected.
+ *
+ *       The drift is estimated from the device's Time Drift Rate (TDR),
+ *       configured through @c CONFIG_HUBBLE_SAT_NETWORK_DEVICE_TDR and
+ *       expressed in parts per million (PPM). The accumulated drift is
+ *       computed as (time since last sync) * TDR, so a higher TDR yields
+ *       more additional retries for the same elapsed time.
  */
 enum hubble_sat_transmission_mode {
 	/** No retries. The packet is transmitted one time. */
 	HUBBLE_SAT_RELIABILITY_NONE,
-	/** Good balance between reliability and power consumption */
+	/**
+	 * Good balance between reliability and power consumption.
+	 * The packet is transmitted 8 times with a 20 second interval
+	 * between transmissions.
+	 */
 	HUBBLE_SAT_RELIABILITY_NORMAL,
-	/** High reliability and higher power consumption */
+	/**
+	 * High reliability and higher power consumption.
+	 * The packet is transmitted 16 times with a 10 second interval
+	 * between transmissions.
+	 */
 	HUBBLE_SAT_RELIABILITY_HIGH,
 };
 
