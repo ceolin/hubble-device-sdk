@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdint.h>
 
+#include <hubble/hubble.h>
 #include <hubble/sat/packet.h>
 #include <hubble/port/sat_radio.h>
 #include <hubble/port/sys.h>
@@ -253,12 +254,21 @@ int hubble_sat_packet_get(struct hubble_sat_packet *packet, const void *payload,
 	uint8_t auth_tag[HUBBLE_AUTH_TAG_SIZE / HUBBLE_BITS_PER_BYTE];
 	uint8_t out[HUBBLE_PAYLOAD_MAX_SIZE] = {0};
 	uint16_t seq_no;
-	uint32_t time_counter = hubble_internal_time_counter_get();
+	uint32_t time_counter;
 	uint32_t eid;
 
 	if (hubble_internal_key_get() == NULL) {
 		HUBBLE_LOG_WARNING("Key not set");
 		return -EINVAL;
+	}
+
+	/* Use the configured counter source (Unix time or device uptime) so
+	 * satellite packets honor CONFIG_HUBBLE_COUNTER_SOURCE_DEVICE_UPTIME,
+	 * matching the BLE advertisement path.
+	 */
+	ret = hubble_counter_get(&time_counter);
+	if (ret != 0) {
+		return ret;
 	}
 
 	ret = hubble_internal_sequence_acquire(time_counter, &seq_no);

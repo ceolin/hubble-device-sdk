@@ -53,12 +53,6 @@ int hubble_key_set(const void *key)
 	return 0;
 }
 
-uint32_t hubble_internal_time_counter_get(void)
-{
-	return hubble_time_get() /
-	       (CONFIG_HUBBLE_EID_ROTATION_PERIOD_SEC * 1000ULL);
-}
-
 #ifndef CONFIG_HUBBLE_NETWORK_SEQUENCE_NONCE_CUSTOM
 uint16_t hubble_sequence_counter_get(void)
 {

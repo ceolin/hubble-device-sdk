@@ -29,19 +29,6 @@ uint64_t hubble_internal_time_last_synced_get(void);
 const void *hubble_internal_key_get(void);
 
 /**
- * @brief Get the current time counter value.
- *
- * Computes a time counter by dividing the current unix epoch time by
- * a daily period (86400000 ms). This counter is used for key
- * derivation and rotates once per day, providing time-based
- * cryptographic isolation.
- *
- * @return Current time counter value representing the number of days
- *         since unix epoch.
- */
-uint32_t hubble_internal_time_counter_get(void);
-
-/**
  * @brief Check if nonce values are safe to use for encryption.
  *
  * This function validates that the provided time counter and sequence number
