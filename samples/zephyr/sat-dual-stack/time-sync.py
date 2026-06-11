@@ -5,48 +5,33 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import asyncio
-import signal
 import struct
 import sys
 import logging
 import httpx
-import json
 import os
-import time
 
 from bleak import BleakClient, BleakScanner
 from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 from dataclasses import dataclass
-from datetime import datetime, timezone, UTC
+from datetime import datetime, UTC
 
 log = logging.getLogger(__name__)
 
 REQUEST_TIMEOUT_S = 30
 
-HUBBLE_API_TOKEN = os.environ["HUBBLE_API_TOKEN"]
+HUBBLE_API_TOKEN = os.environ.get("HUBBLE_API_TOKEN")
+if not HUBBLE_API_TOKEN:
+    sys.exit("HUBBLE_API_TOKEN environment variable is required")
 HUBBLE_EPP_URL = "https://api.hubble.com/api/satellite/ephemeris"
 
 HUBBLE_TARGET_SATELLITE_IDS = [64562, 64565, 64592, 64840]
-HUBBLE_TARGET_SATELLITE_MIN_ALTITUDE_ANGLE = 30
 
 _SERVICE_UUID           = "0000fca7-0000-1000-8000-00805f9b34fb"
 _CHARACTERISTIC_UUID    = "00000005-fca7-4000-8000-00805f9b34fb"
 
 HUBBLE_BLE_UUID_SYNC    = "0000fca7"
-
-@dataclass
-class Pass:
-    """
-    Satellite orbital parameters
-    """
-
-    sat_id: int
-    rise: int
-    culmination: int
-    end: int
-    duration: int
-    uncertainty: int
 
 @dataclass(slots=True)
 class EppParams:
@@ -64,23 +49,6 @@ class EppParams:
     inclination: float
     eccentricity: float
     satellite_id: int  # uint32
-
-    def __str__(self):
-        EPP_TEMPLATE = f"""
-            {{
-                .t0 = {self.t0},
-                .n0 = {self.n0},
-                .ndot = {self.ndot},
-                .raan0 = {self.raan0},
-                .raandot = {self.raandot},
-                .aop0 = {self.aop0},
-                .aopdot = {self.aopdot},
-                .inclination = {self.inclination},
-                .eccentricity = {self.eccentricity},
-                .sat_id = {self.satellite_id},
-            }},
-        """
-        return EPP_TEMPLATE
 
     def to_bytes(self) -> bytes:
         """
@@ -179,12 +147,14 @@ class HubbleClient:
         return results
 
 
-async def scan(stop_event: asyncio.Event, lat: float, lon: float) -> None:
+async def scan() -> None:
     hubble = HubbleClient()
 
     await hubble.start()
-
-    epps = await hubble.fetch_epp()
+    try:
+        epps = await hubble.fetch_epp()
+    finally:
+        await hubble.stop()
 
     def match_hubble_sync_uuid(device: BLEDevice, adv: AdvertisementData):
         for uuid in adv.service_uuids:
@@ -207,23 +177,17 @@ async def scan(stop_event: asyncio.Event, lat: float, lon: float) -> None:
                 await client.write_gatt_char(_CHARACTERISTIC_UUID, data, response=True)
         log.info(f"BLE provisioning done: {device}")
     else:
-        lof.warning("No BLE device found")
+        log.warning("No BLE device found")
         return
 
-def sync(lat: float, lon: float) -> None:
-    stop_event = asyncio.Event()
-    signal.signal(signal.SIGINT, lambda _, __: stop_event.set())
-
-    asyncio.run(scan(stop_event, lat, lon))
+def sync() -> None:
+    asyncio.run(scan())
 
 
 if __name__ == '__main__':
-    # Usage:
-    #   python time-sync.py <lat> <lon>                        — fetch API passes only
-    args = sys.argv[1:]
-    if len(args) == 2:
-        sync(float(args[0]), float(args[1]))
-    else:
-        # No lat/lon provided. Let's use Seattle
-        sync(lat=47.614376, lon=-122.319323)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+    )
+    sync()
 
