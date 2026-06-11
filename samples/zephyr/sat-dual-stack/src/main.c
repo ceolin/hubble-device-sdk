@@ -22,20 +22,8 @@ LOG_MODULE_REGISTER(main, CONFIG_APP_LOG_LEVEL);
 #define HUBBLE_MAX_SAT 6U
 #define MS_PER_SEC     1000U
 
-/*
- * Device location. Set this to the device's actual position; pass prediction
- * is computed relative to it. Defaults to Seattle, WA.
- */
-static const struct hubble_sat_device_pos device_pos = {
-	.lat = 47.614376,
-	.lon = -122.319323,
-};
-
-/*
- * Provisioning data, populated over BLE GATT by app_ble.c. The orbital
- * parameters array is handed to the SDK and must outlive pass calculations.
- */
 struct hubble_sat_orbital_params orb_params[HUBBLE_MAX_SAT];
+struct hubble_sat_device_pos device_pos;
 uint8_t orb_params_count;
 uint64_t unix_time_ms;
 
@@ -106,9 +94,7 @@ int main(void)
 	}
 
 	/*
-	 * Enable BLE and start connectable advertising. The companion app
-	 * writes the UTC time and satellite orbital parameters over GATT, then
-	 * disconnects, which gives sync_sem.
+	 * Enable BLE and start connectable advertising.
 	 */
 	err = ble_init();
 	if (err != 0) {
@@ -151,9 +137,9 @@ int main(void)
 		if (pass_info.start <= now_s) {
 			LOG_INF("Pass ongoing or in the past, finding next...");
 
-			err = hubble_sat_next_pass_get(pass_info.start +
-							       pass_info.duration,
-						       &device_pos, &pass_info);
+			err = hubble_sat_next_pass_get(
+				pass_info.start + pass_info.duration,
+				&device_pos, &pass_info);
 			if (err != 0) {
 				LOG_ERR("Failed to get next pass info (err %d)",
 					err);
@@ -163,7 +149,7 @@ int main(void)
 
 #ifdef CONFIG_HUBBLE_SAMPLE_DEBUG
 		LOG_INF("Debug mode: next pass in 120 seconds");
-		k_timer_start(&sat_timer, K_SECONDS(120), K_NO_WAIT);
+		k_timer_start(&sat_timer, K_SECONDS(10), K_NO_WAIT);
 #else
 		LOG_INF("Next pass at %llu (unix epoch seconds)",
 			pass_info.start);
@@ -171,6 +157,7 @@ int main(void)
 			      K_NO_WAIT);
 #endif
 
+	printk("%s:%d\n", __FUNCTION__, __LINE__);
 		/* Beacon over BLE until the pass window opens. */
 		err = ble_adv_start();
 		if (err != 0) {

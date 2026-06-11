@@ -24,7 +24,7 @@ REQUEST_TIMEOUT_S = 30
 HUBBLE_API_TOKEN = os.environ.get("HUBBLE_API_TOKEN")
 if not HUBBLE_API_TOKEN:
     sys.exit("HUBBLE_API_TOKEN environment variable is required")
-HUBBLE_EPP_URL = "https://api.hubble.com/api/satellite/ephemeris"
+HUBBLE_EPHEMERIS_URL = "https://api.hubble.com/api/satellite/ephemeris"
 
 HUBBLE_TARGET_SATELLITE_IDS = [64562, 64565, 64592, 64840]
 
@@ -34,7 +34,7 @@ _CHARACTERISTIC_UUID    = "00000005-fca7-4000-8000-00805f9b34fb"
 HUBBLE_BLE_UUID_SYNC    = "0000fca7"
 
 @dataclass(slots=True)
-class EppParams:
+class OrbitalParams:
     """
     Satellite orbital parameters
     """
@@ -88,19 +88,19 @@ class HubbleClient:
             self._client = None
             log.info("Hubble client stopped")
 
-    async def fetch_epp(self) -> list[EppParams]:
+    async def fetch_ephemeris(self) -> list[OrbitalParams]:
         """
-        Fetch EPP params for target satellites.
+        Fetch Orbital params for target satellites.
 
         Returns:
-            A list of EppParams for each target satellite that has EPP data.
+            A list of OrbitalParams for each target satellite.
         """
         if self._client is None:
             raise RuntimeError("HubbleClient.start() must be called first")
 
         try:
             response = await self._client.get(
-                HUBBLE_EPP_URL,
+                HUBBLE_EPHEMERIS_URL,
                 headers={"Authorization": f"Bearer {HUBBLE_API_TOKEN}"},
             )
             response.raise_for_status()
@@ -120,39 +120,39 @@ class HubbleClient:
             if sat_id not in HUBBLE_TARGET_SATELLITE_IDS:
                 continue
 
-            epp = sat.get("orbital_params")
-            if epp is None:
+            orbital_params = sat.get("orbital_params")
+            if orbital_params is None:
                 log.debug("No Orbital params for satellite %d", sat_id)
                 continue
 
             try:
                 results.append(
-                    EppParams(
-                        t0=epp["t0"],
-                        n0=epp["n0"],
-                        ndot=epp["ndot"],
-                        raan0=epp["raan0"],
-                        raandot=epp["raandot"],
-                        aop0=epp["aop0"],
-                        aopdot=epp["aopdot"],
-                        inclination=epp["inclination"],
-                        eccentricity=epp["eccentricity"],
+                    OrbitalParams(
+                        t0=orbital_params["t0"],
+                        n0=orbital_params["n0"],
+                        ndot=orbital_params["ndot"],
+                        raan0=orbital_params["raan0"],
+                        raandot=orbital_params["raandot"],
+                        aop0=orbital_params["aop0"],
+                        aopdot=orbital_params["aopdot"],
+                        inclination=orbital_params["inclination"],
+                        eccentricity=orbital_params["eccentricity"],
                         satellite_id=sat_id,
                     ),
                 )
             except (KeyError, ValueError) as e:
-                log.warning("Failed to parse EPP for satellite %d: %s", sat_id, e)
+                log.warning("Failed to parse Orbital params for satellite %d: %s", sat_id, e)
 
-        log.info("Fetched EPP for %d satellites", len(results))
+        log.info("Fetched Orbital params for %d satellites", len(results))
         return results
 
 
-async def scan() -> None:
+async def scan(lat: float, lon: float) -> None:
     hubble = HubbleClient()
 
     await hubble.start()
     try:
-        epps = await hubble.fetch_epp()
+        ephemeris = await hubble.fetch_ephemeris()
     finally:
         await hubble.stop()
 
@@ -169,19 +169,24 @@ async def scan() -> None:
             data +=  bytearray(int(datetime.now(UTC).timestamp() * 1000).to_bytes(8, byteorder="little", signed=False))
             await client.write_gatt_char(_CHARACTERISTIC_UUID, data, response=True)
 
-            for epp in epps:
-                data = bytearray([0x01, 0x03])
-                data.extend(epp.to_bytes())
+            data = bytearray([0x01, 0x04])
+            data.extend(struct.pack("<d", lat))
+            data.extend(struct.pack("<d", lon))
+            await client.write_gatt_char(_CHARACTERISTIC_UUID, data, response=True)
 
-                # Send new EPP notification
+            for orbital_params in ephemeris:
+                data = bytearray([0x01, 0x03])
+                data.extend(orbital_params.to_bytes())
+
+                # Send new Orbital params notification
                 await client.write_gatt_char(_CHARACTERISTIC_UUID, data, response=True)
         log.info(f"BLE provisioning done: {device}")
     else:
         log.warning("No BLE device found")
         return
 
-def sync() -> None:
-    asyncio.run(scan())
+def sync(lat: float, lon: float) -> None:
+    asyncio.run(scan(lat, lon))
 
 
 if __name__ == '__main__':
@@ -189,5 +194,11 @@ if __name__ == '__main__':
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
     )
-    sync()
+    args = sys.argv[1:]
+
+    if len(args) == 2:
+        sync(float(args[0]), float(args[1]))
+    else:
+        # No lat/lon provided. Let's use Seattle
+        sync(lat=47.614376, lon=-122.319323)
 

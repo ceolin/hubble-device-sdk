@@ -28,38 +28,37 @@ LOG_MODULE_REGISTER(app_ble, CONFIG_APP_LOG_LEVEL);
  * be provisioned. It distinguishes a device that still needs time / orbital
  * parameters from one that is properly beaconing the Hubble UUID (0xFCA6).
  */
-#define HUBBLE_BLE_UUID_PROVISION 0xFCA7
+#define HUBBLE_BLE_UUID_PROVISION      0xFCA7
 
 /* Buffer used for the Hubble beacon advertisement payload. */
-#define HUBBLE_BLE_BUFFER_LEN     31U
+#define HUBBLE_BLE_BUFFER_LEN          31U
 
-/* Provisioning GATT protocol. Mirrors the ESP-IDF dual-stack sample. */
-#define HUBBLE_CMD                0x01
-#define HUBBLE_CMD_UNIX_EPOCH     0x02
-#define HUBBLE_CMD_ORBITAL_PARAMS 0x03
+#define HUBBLE_CMD                     0x01
+#define HUBBLE_CMD_UNIX_EPOCH          0x02
+#define HUBBLE_CMD_ORBITAL_PARAMS      0x03
+#define HUBBLE_CMD_DEVICE_LOCATION     0x04
 #define HUBBLE_ORBITAL_PARAMS_CMD_SIZE 76U
-#define HUBBLE_MAX_SAT            6U
+#define HUBBLE_MAX_SAT                 6U
 
 /* Period to refresh the beacon advertisement payload (1 hour). */
-#define HUBBLE_ADV_REFRESH_PERIOD K_HOURS(1)
+#define HUBBLE_ADV_REFRESH_PERIOD      K_HOURS(1)
 
 /*
- * Provisioning service:
  *   Service:        0000fca7-0000-1000-8000-00805f9b34fb
  *   Characteristic: 00000005-fca7-4000-8000-00805f9b34fb
  */
-#define HUBBLE_PROV_SVC_UUID                                                    \
+#define HUBBLE_PROV_SVC_UUID                                                   \
 	BT_UUID_DECLARE_128(BT_UUID_128_ENCODE(0x0000fca7, 0x0000, 0x1000,     \
 					       0x8000, 0x00805f9b34fb))
-#define HUBBLE_PROV_CHR_UUID                                                    \
+#define HUBBLE_PROV_CHR_UUID                                                   \
 	BT_UUID_DECLARE_128(BT_UUID_128_ENCODE(0x00000005, 0xfca7, 0x4000,     \
 					       0x8000, 0x00805f9b34fb))
 
 /*
- * Provisioning data lives in main.c; it is shared with the satellite pass
- * scheduling loop. Filled in by the GATT write handler below.
+ * Provisioning data lives in main.c
  */
 extern struct hubble_sat_orbital_params orb_params[];
+extern struct hubble_sat_device_pos device_pos;
 extern uint8_t orb_params_count;
 extern uint64_t unix_time_ms;
 
@@ -82,23 +81,6 @@ static const struct bt_data _prov_ad[] = {
 	BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME,
 		sizeof(CONFIG_BT_DEVICE_NAME) - 1),
 };
-
-static int _start_provisioning_adv(void);
-
-/* Refresh and connectable-restart deferred work. */
-static void _adv_refresh_work_handler(struct k_work *work);
-static void _prov_restart_work_handler(struct k_work *work);
-static K_WORK_DEFINE(_adv_refresh_work, _adv_refresh_work_handler);
-static K_WORK_DEFINE(_prov_restart_work, _prov_restart_work_handler);
-
-static void _adv_refresh_timer_cb(struct k_timer *timer)
-{
-	ARG_UNUSED(timer);
-
-	k_work_submit(&_adv_refresh_work);
-}
-
-static K_TIMER_DEFINE(_adv_refresh_timer, _adv_refresh_timer_cb, NULL);
 
 /* Fetch a fresh Hubble beacon payload into the advertisement data set. */
 static int _beacon_data_update(void)
@@ -129,15 +111,34 @@ static void _adv_refresh_work_handler(struct k_work *work)
 	(void)bt_le_adv_update_data(_beacon_ad, ARRAY_SIZE(_beacon_ad), NULL, 0);
 }
 
+static K_WORK_DEFINE(_adv_refresh_work, _adv_refresh_work_handler);
+
+static void _adv_refresh_timer_cb(struct k_timer *timer)
+{
+	ARG_UNUSED(timer);
+
+	k_work_submit(&_adv_refresh_work);
+}
+
+static K_TIMER_DEFINE(_adv_refresh_timer, _adv_refresh_timer_cb, NULL);
+
 int ble_adv_start(void)
 {
 	int err;
 
-	err = _beacon_data_update();
-	if (err != 0) {
-		return err;
+	if (!bt_is_ready()) {
+		printk("%s:%d\n", __FUNCTION__, __LINE__);
+		err = bt_enable(NULL);
+		if (err != 0) {
+			return err;
+		}
 	}
 
+	err = _beacon_data_update();
+	if (err != 0) {
+		printk("%s:%d\n", __FUNCTION__, __LINE__);
+		return err;
+	}
 	LOG_DBG("Beacon advertisement payload: %d bytes", _beacon_ad[1].data_len);
 
 	err = bt_le_adv_start(BT_LE_ADV_PARAM(BT_LE_ADV_OPT_USE_NRPA,
@@ -158,11 +159,11 @@ int ble_adv_start(void)
 int ble_adv_stop(void)
 {
 	k_timer_stop(&_adv_refresh_timer);
-
-	return bt_le_adv_stop();
+	printk("%s:%d\n", __FUNCTION__, __LINE__);
+	bt_le_adv_stop();
+	return bt_disable();
 }
 
-/* GATT write handler: provisioning commands (time / orbital parameters). */
 static ssize_t _prov_write(struct bt_conn *conn,
 			   const struct bt_gatt_attr *attr, const void *buf,
 			   uint16_t len, uint16_t offset, uint8_t flags)
@@ -191,7 +192,7 @@ static ssize_t _prov_write(struct bt_conn *conn,
 		LOG_INF("Received unix time: %llu", unix_time_ms);
 		break;
 
-	case HUBBLE_CMD_ORBITAL_PARAMS: {
+	case HUBBLE_CMD_ORBITAL_PARAMS:
 		struct hubble_sat_orbital_params *dst;
 		const uint8_t *p = &data[2];
 
@@ -222,8 +223,14 @@ static ssize_t _prov_write(struct bt_conn *conn,
 		LOG_INF("Received orbital params for satellite ID %u",
 			dst->satellite_id);
 		break;
-	}
 
+	case HUBBLE_CMD_DEVICE_LOCATION:
+		if (len != (2 + 2 * sizeof(double))) {
+			return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+		}
+		memcpy(&device_pos.lat, &data[2], sizeof(double));
+		memcpy(&device_pos.lon, &data[2] + sizeof(double), sizeof(double));
+		break;
 	default:
 		return BT_GATT_ERR(BT_ATT_ERR_NOT_SUPPORTED);
 	}
@@ -232,22 +239,21 @@ static ssize_t _prov_write(struct bt_conn *conn,
 }
 
 /* Provisioning GATT service. */
-BT_GATT_SERVICE_DEFINE(hubble_prov_svc,
-	BT_GATT_PRIMARY_SERVICE(HUBBLE_PROV_SVC_UUID),
+BT_GATT_SERVICE_DEFINE(
+	hubble_prov_svc, BT_GATT_PRIMARY_SERVICE(HUBBLE_PROV_SVC_UUID),
 	BT_GATT_CHARACTERISTIC(HUBBLE_PROV_CHR_UUID,
 			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_WRITE_WITHOUT_RESP,
-			       BT_GATT_PERM_WRITE, NULL, _prov_write, NULL),
-);
+			       BT_GATT_PERM_WRITE, NULL, _prov_write, NULL), );
 
 static int _start_provisioning_adv(void)
 {
 	int err;
 
-	err = bt_le_adv_start(BT_LE_ADV_PARAM(BT_LE_ADV_OPT_USE_NRPA |
-						      BT_LE_ADV_OPT_CONN,
-					      BT_GAP_ADV_FAST_INT_MIN_2,
-					      BT_GAP_ADV_FAST_INT_MAX_2, NULL),
-			      _prov_ad, ARRAY_SIZE(_prov_ad), NULL, 0);
+	err = bt_le_adv_start(
+		BT_LE_ADV_PARAM(BT_LE_ADV_OPT_USE_NRPA | BT_LE_ADV_OPT_CONN,
+				BT_GAP_ADV_FAST_INT_MIN_2,
+				BT_GAP_ADV_FAST_INT_MAX_2, NULL),
+		_prov_ad, ARRAY_SIZE(_prov_ad), NULL, 0);
 	if (err != 0) {
 		LOG_ERR("Failed to start provisioning adv (err=%d)", err);
 	}
@@ -261,6 +267,8 @@ static void _prov_restart_work_handler(struct k_work *work)
 
 	(void)_start_provisioning_adv();
 }
+
+static K_WORK_DEFINE(_prov_restart_work, _prov_restart_work_handler);
 
 static void _connected(struct bt_conn *conn, uint8_t err)
 {
@@ -281,10 +289,6 @@ static void _disconnected(struct bt_conn *conn, uint8_t reason)
 
 	LOG_DBG("Disconnected (reason 0x%02x)", reason);
 
-	/*
-	 * Provisioning is considered complete once the device has a valid time.
-	 * Otherwise keep advertising connectably so the peer can retry.
-	 */
 	if (unix_time_ms != 0U) {
 		k_sem_give(&sync_sem);
 	} else {
