@@ -21,7 +21,6 @@
 #define HUBBLE_TWO_PI_DEGREES            360
 #define HUBBLE_TWO_PI                    (2.0 * M_PI)
 #define HUBBLE_PI_DEGREES                180
-#define HUBBLE_ELEVATION_ANGLE_TOLERANCE 30
 
 #define HUBBLE_PI_2                      1.57079632679489661923  /* PI / 2 */
 #define HUBBLE_PI_4                      0.785398163397448309616 /* PI / 4 */
@@ -58,6 +57,7 @@ static const struct {
 
 static const struct hubble_sat_orbital_params *_satellites;
 static size_t _satellites_count;
+static uint8_t _elevation_angle_tolerance = 45;
 
 #ifdef CONFIG_HUBBLE_SAT_NETWORK_SMALL
 
@@ -546,7 +546,7 @@ static double _lon_tolerance_get(double lat, double sat_altitude)
 {
 	double A, C, b, B;
 
-	A = _DEG2RAD(HUBBLE_ELEVATION_ANGLE_TOLERANCE + 90);
+	A = _DEG2RAD(_elevation_angle_tolerance + 90.0);
 
 	C = _asin(earth.radius * _sin(A) / (earth.radius + sat_altitude));
 	b = earth.radius * _cos(M_PI - _asin((earth.radius + sat_altitude) *
@@ -1040,6 +1040,17 @@ int hubble_sat_next_pass_region_get(
 			 (unsigned long long)pass->culmination, pass->lon,
 			 (unsigned long long)pass->duration, (int)ascending,
 			 pass->max_elevation_angle);
+
+	return 0;
+}
+
+int hubble_sat_min_elevation_angle_set(uint8_t angle)
+{
+	if ((angle < 30U) || (angle > 90U)) {
+		return -EINVAL;
+	}
+
+	_elevation_angle_tolerance = angle;
 
 	return 0;
 }

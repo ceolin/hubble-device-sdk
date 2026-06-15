@@ -216,4 +216,12 @@ ZTEST(satellite_pass_prediction_test,
 	}
 }
 
-ZTEST_SUITE(satellite_pass_prediction_test, NULL, NULL, NULL, NULL, NULL);
+static void *pass_prediction_init(void)
+{
+	(void)hubble_sat_min_elevation_angle_set(30);
+
+	return NULL;
+}
+
+ZTEST_SUITE(satellite_pass_prediction_test, NULL, pass_prediction_init, NULL,
+	    NULL, NULL);

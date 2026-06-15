@@ -161,6 +161,24 @@ int hubble_sat_next_pass_region_get(
 	uint64_t t, const struct hubble_sat_device_region *region,
 	struct hubble_sat_pass_info *pass);
 
+/**
+ * @brief Set the minimum elevation angle for a satellite pass.
+ *
+ * This function configures the minimum elevation angle above the horizon that a
+ * satellite must reach at culmination for a pass to be reported by
+ * hubble_sat_next_pass_get() and hubble_sat_next_pass_region_get(). Passes whose
+ * maximum elevation angle is below this threshold are ignored.
+ *
+ * Raising the angle restricts results to higher, closer passes (typically better
+ * link quality) at the cost of fewer reported passes. The default minimum
+ * elevation angle is 45 degrees.
+ *
+ * @param angle Minimum elevation angle in degrees. Must be in the range [30, 90].
+ * @return 0 on success.
+ * @retval -EINVAL if @p angle is outside the range [30, 90].
+ */
+int hubble_sat_min_elevation_angle_set(uint8_t angle);
+
 /** @} */
 
 #ifdef __cplusplus
