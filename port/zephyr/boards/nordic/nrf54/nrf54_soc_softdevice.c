@@ -79,7 +79,7 @@ enum mpsl_call {
 	MPSL_CALL_CLOSE,
 };
 
-K_MSGQ_DEFINE(_mpsl_msgq, sizeof(enum mpsl_call), 4, 4);
+K_MSGQ_DEFINE(_mpsl_msgq, sizeof(enum mpsl_call), 8, 4);
 
 static mpsl_timeslot_session_id_t _session_id = 0xFFu;
 static int _call_result;
@@ -357,6 +357,8 @@ int hubble_sat_soc_packet_send(const struct hubble_sat_packet_frames *packet)
 	}
 
 	k_sem_take(&_transmit_sem, K_FOREVER);
+
+	(void)k_msgq_cleanup(&_mpsl_msgq);
 
 	_tx_packet = packet;
 	_tx_total = packet->total_number_of_symbols;
