@@ -7,7 +7,7 @@ zephyr_library_sources(nrf53_soc.c)
 
 add_library(libhubble_sat_nrf53 STATIC IMPORTED GLOBAL)
 set_target_properties(libhubble_sat_nrf53 PROPERTIES
-	IMPORTED_LOCATION ${HUBBLE_BLOBS_DIR}/nrf53/libhubble_sat_nrf53.a
+	IMPORTED_LOCATION ${HUBBLE_BLOBS_DIR}/nrf53/${HUBBLE_BLOBS_ABI}/libhubble_sat_nrf53.a
 )
 zephyr_link_libraries(libhubble_sat_nrf53)
 

@@ -11,7 +11,7 @@ endif()
 
 add_library(libhubble_sat_nrf54 STATIC IMPORTED GLOBAL)
 set_target_properties(libhubble_sat_nrf54 PROPERTIES
-	IMPORTED_LOCATION ${HUBBLE_BLOBS_DIR}/nrf54/libhubble_sat_nrf54.a
+	IMPORTED_LOCATION ${HUBBLE_BLOBS_DIR}/nrf54/${HUBBLE_BLOBS_ABI}/libhubble_sat_nrf54.a
 )
 zephyr_link_libraries(libhubble_sat_nrf54)
 

@@ -6,24 +6,45 @@ build:
 
 
 blobs:
-  - path: nrf52/libhubble_sat_nrf52.a
+  - path: nrf52/soft/libhubble_sat_nrf52.a
     sha256: 1b961ef4580c7a0c54780419b624a2b5913ac4cea7173f85bb1ab04d50735d36
     type: lib
     version: "0.9"
     description: NRF52 Satellite library
     license-path: zephyr/blobs/license.txt
-    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/0bc5b68aba7ae60efade987b4f00f08856bc278e/nrf52/libhubble_sat_nrf52.a
-  - path: nrf53/libhubble_sat_nrf53.a
+    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/2d2e79e6ef2b2e9cc9f37fb4bb6f0b91a1c0b1f7/nrf52/soft/libhubble_sat_nrf52.a
+  - path: nrf52/hard/libhubble_sat_nrf52.a
+    sha256: 0dbbaef0b888cccbd0a937c6b233aabf9744fcc95d4fbe2a5659ec1e4451c1b2
+    type: lib
+    version: "0.9"
+    description: NRF52 Satellite library
+    license-path: zephyr/blobs/license.txt
+    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/2d2e79e6ef2b2e9cc9f37fb4bb6f0b91a1c0b1f7/nrf52/hard/libhubble_sat_nrf52.a
+  - path: nrf53/soft/libhubble_sat_nrf53.a
     sha256: 47741489229823098cc515abdc6ee74aababdbfc68afba93f958fca4ba7e64e1
     type: lib
     version: "0.9"
     description: NRF53 Satellite library
     license-path: zephyr/blobs/license.txt
-    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/0bc5b68aba7ae60efade987b4f00f08856bc278e/nrf53/libhubble_sat_nrf53.a
-  - path: nrf54/libhubble_sat_nrf54.a
+    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/2d2e79e6ef2b2e9cc9f37fb4bb6f0b91a1c0b1f7/nrf53/soft/libhubble_sat_nrf53.a
+  - path: nrf53/hard/libhubble_sat_nrf53.a
+    sha256: 461ed4afb82afd236ae85d7c242f46907c8788c8be31d25d91b1281a2b7d61b8
+    type: lib
+    version: "0.9"
+    description: NRF53 Satellite library
+    license-path: zephyr/blobs/license.txt
+    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/2d2e79e6ef2b2e9cc9f37fb4bb6f0b91a1c0b1f7/nrf53/hard/libhubble_sat_nrf53.a
+  - path: nrf54/soft/libhubble_sat_nrf54.a
     sha256: 06e493f1db0f4c26e89caca8307cd09564731270a4f864572ae102893892d8ab
     type: lib
     version: "0.9"
     description: NRF54 Satellite library
     license-path: zephyr/blobs/license.txt
-    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/0bc5b68aba7ae60efade987b4f00f08856bc278e/nrf54/libhubble_sat_nrf54.a
+    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/2d2e79e6ef2b2e9cc9f37fb4bb6f0b91a1c0b1f7/nrf54/soft/libhubble_sat_nrf54.a
+  - path: nrf54/hard/libhubble_sat_nrf54.a
+    sha256: 9c29eb378716372cac41210e10b29fdd3d4c1795deb549935aaf6bd9695c3a83
+    type: lib
+    version: "0.9"
+    description: NRF54 Satellite library
+    license-path: zephyr/blobs/license.txt
+    url: https://github.com/HubbleNetwork/hubble-device-sdk-blobs/raw/2d2e79e6ef2b2e9cc9f37fb4bb6f0b91a1c0b1f7/nrf54/hard/libhubble_sat_nrf54.a
