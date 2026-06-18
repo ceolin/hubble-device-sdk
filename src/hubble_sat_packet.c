@@ -262,6 +262,10 @@ int hubble_sat_packet_get(struct hubble_sat_packet *packet, const void *payload,
 	uint32_t time_counter;
 	uint32_t eid;
 
+	if ((packet == NULL) || ((payload == NULL) && (length > 0))) {
+		return -EINVAL;
+	}
+
 	if (hubble_internal_key_get() == NULL) {
 		HUBBLE_LOG_WARNING("Key not set");
 		return -EINVAL;

@@ -136,6 +136,14 @@ ZTEST(sat_test, test_packet)
 	err = hubble_sat_packet_get(&pkt, NULL, 0);
 	zassert_ok(err);
 
+	/* NULL packet is invalid */
+	err = hubble_sat_packet_get(NULL, NULL, 0);
+	zassert_not_ok(err);
+
+	/* NULL payload with invalid length must return error */
+	err = hubble_sat_packet_get(&pkt, NULL, 20);
+	zassert_not_ok(err);
+
 	err = hubble_sat_packet_get(&pkt, buffer, 1);
 
 	/* Available sizes are: 0, 4, 9 and 13 (HUBBLE_SAT_PAYLOAD_MAX) */
