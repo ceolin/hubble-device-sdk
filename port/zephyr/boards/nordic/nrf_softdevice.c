@@ -14,7 +14,11 @@
 #include <hubble/sat/packet.h>
 
 #include <hal/nrf_radio.h>
+#ifdef CONFIG_SOC_SERIES_NRF52
+#include <hal/nrf_ppi.h>
+#else
 #include <hal/nrf_dppi.h>
+#endif
 #include <hal/nrf_timer.h>
 
 #include <mpsl_timeslot.h>
@@ -23,15 +27,20 @@
 #include <errno.h>
 #include <stdint.h>
 
-/* From nRF54L15 PS: Time between TXEN -> READY is ~40us with fast ramp-up */
-#define WAIT_SYMBOL_OFF_US         (HUBBLE_WAIT_SYMBOL_OFF_US - 40)
-#define WAIT_SYMBOL_US             (HUBBLE_WAIT_SYMBOL_US + 40)
+/* Time between TXEN -> READY is ~40us with fast ramp-up */
+#define WAIT_SYMBOL_OFF_US (HUBBLE_WAIT_SYMBOL_OFF_US - 40)
+#define WAIT_SYMBOL_US     (HUBBLE_WAIT_SYMBOL_US + 40)
 
-#define RADIO_NODE                 DT_NODELABEL(radio)
+#define RADIO_NODE         DT_NODELABEL(radio)
 
-#define NRF_DPPIC                  NRF_DPPIC10
+#ifdef CONFIG_SOC_COMPATIBLE_NRF54LX
+#define NRF_DPPIC NRF_DPPIC10
+#endif
+
+#ifndef CONFIG_SOC_SERIES_NRF52
 #define RADIO_ENABLE_TX_ON_CC0_PPI 9U
 #define RADIO_DISABLE_ON_CC1_PPI   12U
+#endif
 
 /*
  * The radio is owned by MPSL when the SoftDevice Controller is enabled, so
@@ -39,13 +48,13 @@
  * application has exclusive access to RADIO and TIMER0, and MPSL forwards the
  * RADIO and TIMER0 interrupts to the timeslot signal callback.
  */
-#define SAT_TIMER                  MPSL_TIMER0
+#define SAT_TIMER              MPSL_TIMER0
 
-#define TIMESLOT_LENGTH_US         MPSL_TIMESLOT_LENGTH_MAX_US
-#define TIMESLOT_TIMEOUT_US        (1000000UL)
-#define TIMESLOT_EXTEND_US         (WAIT_SYMBOL_OFF_US + WAIT_SYMBOL_US)
+#define TIMESLOT_LENGTH_US     MPSL_TIMESLOT_LENGTH_MAX_US
+#define TIMESLOT_TIMEOUT_US    (1000000UL)
+#define TIMESLOT_EXTEND_US     (WAIT_SYMBOL_OFF_US + WAIT_SYMBOL_US)
 
-#define MPSL_THREAD_STACK_SIZE     (1024U)
+#define MPSL_THREAD_STACK_SIZE (1024U)
 
 /**
  * Signature for APIs provided by the binary library.
@@ -107,8 +116,9 @@ static mpsl_timeslot_signal_return_param_t _ts_return;
  * Wire TIMER0 EVENTS_COMPARE[0] -> RADIO TASKS_TXEN and
  * TIMER0 EVENTS_COMPARE[1] -> RADIO TASKS_DISABLE.
  */
-static void _dppi_setup(void)
+static void _ppi_setup(void)
 {
+#ifndef CONFIG_SOC_SERIES_NRF52
 	/* TIMER COMPARE[0] -> RADIO TXEN */
 	nrf_timer_publish_set(SAT_TIMER, NRF_TIMER_EVENT_COMPARE0,
 			      RADIO_ENABLE_TX_ON_CC0_PPI);
@@ -120,28 +130,41 @@ static void _dppi_setup(void)
 			      RADIO_DISABLE_ON_CC1_PPI);
 	nrf_radio_subscribe_set(NRF_RADIO, NRF_RADIO_TASK_DISABLE,
 				RADIO_DISABLE_ON_CC1_PPI);
+#endif
 }
 
-static void _dppi_enable(void)
+static void _ppi_enable(void)
 {
+#ifdef CONFIG_SOC_SERIES_NRF52
+	nrf_ppi_channel_enable(NRF_PPI, NRF_PPI_CHANNEL22);
+	nrf_ppi_channel_enable(NRF_PPI, NRF_PPI_CHANNEL20);
+#else
 	nrf_dppi_channels_enable(NRF_DPPIC,
 				 BIT(RADIO_ENABLE_TX_ON_CC0_PPI) |
 					 BIT(RADIO_DISABLE_ON_CC1_PPI));
+#endif
 }
 
-static void _dppi_disable(void)
+static void _ppi_disable(void)
 {
+#ifdef CONFIG_SOC_SERIES_NRF52
+	nrf_ppi_channel_disable(NRF_PPI, NRF_PPI_CHANNEL22);
+	nrf_ppi_channel_disable(NRF_PPI, NRF_PPI_CHANNEL20);
+#else
 	nrf_dppi_channels_disable(NRF_DPPIC,
 				  BIT(RADIO_ENABLE_TX_ON_CC0_PPI) |
 					  BIT(RADIO_DISABLE_ON_CC1_PPI));
+#endif
 }
 
-static void _dppi_clear(void)
+static void _ppi_clear(void)
 {
+#ifndef CONFIG_SOC_SERIES_NRF52
 	nrf_timer_publish_clear(SAT_TIMER, NRF_TIMER_EVENT_COMPARE0);
 	nrf_timer_publish_clear(SAT_TIMER, NRF_TIMER_EVENT_COMPARE1);
 	nrf_radio_subscribe_clear(NRF_RADIO, NRF_RADIO_TASK_TXEN);
 	nrf_radio_subscribe_clear(NRF_RADIO, NRF_RADIO_TASK_DISABLE);
+#endif
 }
 
 static void _timer_start(uint32_t cc0, uint32_t cc1)
@@ -171,7 +194,9 @@ static void _radio_tx_start(void)
 
 	(void)hubble_nrf_lib_enable();
 
+#ifndef CONFIG_SOC_SERIES_NRF52
 	nrf_radio_subscribe_clear(NRF_RADIO, NRF_RADIO_TASK_RXEN);
+#endif
 
 	nrf_radio_fast_ramp_up_enable_set(NRF_RADIO, true);
 	nrf_radio_mode_set(NRF_RADIO, NRF_RADIO_MODE_BLE_1MBIT);
@@ -191,8 +216,8 @@ static void _radio_tx_start(void)
 	NVIC_ClearPendingIRQ(DT_IRQN(RADIO_NODE));
 	irq_enable(DT_IRQN(RADIO_NODE));
 
-	_dppi_setup();
-	_dppi_enable();
+	_ppi_setup();
+	_ppi_enable();
 
 	/* Program the first symbol before the timer triggers TXEN. */
 	_radio_symbol_set(0);
@@ -208,8 +233,8 @@ static void _radio_tx_stop(void)
 	nrf_timer_task_trigger(SAT_TIMER, NRF_TIMER_TASK_STOP);
 	nrf_timer_shorts_set(SAT_TIMER, 0);
 
-	_dppi_disable();
-	_dppi_clear();
+	_ppi_disable();
+	_ppi_clear();
 
 	nrf_radio_int_disable(NRF_RADIO, ~0U);
 	nrf_radio_shorts_set(NRF_RADIO, 0);

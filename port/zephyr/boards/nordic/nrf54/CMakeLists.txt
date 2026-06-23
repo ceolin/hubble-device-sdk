@@ -4,7 +4,7 @@ zephyr_include_directories(
 )
 
 if(CONFIG_BT_LL_SOFTDEVICE)
-	zephyr_library_sources(nrf54_soc_softdevice.c)
+	zephyr_library_sources(../nrf_softdevice.c)
 else()
 	zephyr_library_sources(nrf54_soc.c)
 endif()
