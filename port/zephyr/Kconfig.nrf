@@ -1,0 +1,27 @@
+# Copyright (c) 2026 Hubble Network, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+if SOC_FAMILY_NORDIC_NRF && HUBBLE_SAT_NETWORK && HUBBLE_BLE_NETWORK
+
+if !ZEPHYR_NRF_MODULE
+configdefault NRFX_TIMER
+      	default y
+
+configdefault BT_CTLR_ADVANCED_FEATURES
+      	default y
+
+configdefault BT_CTLR_DYNAMIC_INTERRUPTS
+      	default y
+
+configdefault DYNAMIC_INTERRUPTS
+      	default y
+
+configdefault DYNAMIC_DIRECT_INTERRUPTS
+      	default y
+
+configdefault SHARED_INTERRUPTS
+      	default y
+
+endif # ZEPHYR_NRF_MODULE
+
+endif # SOC_FAMILY_NORDIC_NRF && HUBBLE_SAT_NETWORK && HUBBLE_BLE_NETWORK

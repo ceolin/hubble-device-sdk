@@ -215,3 +215,6 @@ endif
 menu "Logging"
 
 endmenu
+
+rsource "Kconfig.nrf"
+rsource "Kconfig.silabs"

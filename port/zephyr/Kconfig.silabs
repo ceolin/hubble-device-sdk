@@ -1,0 +1,16 @@
+# Copyright (c) 2026 Hubble Network, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+if HUBBLE_SAT_NETWORK
+
+configdefault SOC_GECKO_CUSTOM_RADIO_PHY
+      	default y
+
+if HUBBLE_BLE_NETWORK
+
+configdefault SILABS_SISDK_RAIL_MULTIPROTOCOL
+      	default y
+
+endif # HUBBLE_BLE_NETWORK
+
+endif # HUBBLE_SAT_NETWORK
