@@ -3,7 +3,8 @@ name: hubblenetwork-sdk
 build:
   cmake: port/zephyr
   kconfig: port/zephyr/Kconfig
-
+  settings:
+    snippet_root: port/zephyr/
 
 blobs:
   - path: nrf52/soft/libhubble_sat_nrf52.a
