@@ -13,15 +13,20 @@ common:
   tags:
     - satellite
 tests:
-  app.sat.continuous.default: {}
+  app.sat.continuous.default:
+    extra_configs:
+      - CONFIG_SAMPLE_PROVIDE_SAT_BOARD_SUPPORT=y
   app.sat.continuous.128key:
     extra_configs:
       - CONFIG_HUBBLE_NETWORK_KEY_128=y
+      - CONFIG_SAMPLE_PROVIDE_SAT_BOARD_SUPPORT=y
   app.sat.continuous.mbedtls:
     extra_configs:
       - CONFIG_HUBBLE_NETWORK_CRYPTO_MBEDTLS=y
+      - CONFIG_SAMPLE_PROVIDE_SAT_BOARD_SUPPORT=y
   app.sat.continuous.mbedtls_128key:
     extra_configs:
       - CONFIG_HUBBLE_NETWORK_CRYPTO_MBEDTLS=y
       - CONFIG_HUBBLE_NETWORK_KEY_128=y
+      - CONFIG_SAMPLE_PROVIDE_SAT_BOARD_SUPPORT=y
 
