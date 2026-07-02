@@ -178,7 +178,6 @@ choice
 
 config HUBBLE_NETWORK_CRYPTO_MBEDTLS
 	bool "Use MbedTLS"
-	depends on !NRF_SECURITY
 	select MBEDTLS
 	select MBEDTLS_CMAC
 	select MBEDTLS_CIPHER
@@ -189,8 +188,7 @@ config HUBBLE_NETWORK_CRYPTO_MBEDTLS
 
 config HUBBLE_NETWORK_CRYPTO_PSA
 	bool "Use PSA Crypto"
-	select MBEDTLS
-	select MBEDTLS_PSA_CRYPTO_C if !BUILD_WITH_TFM
+	select PSA_CRYPTO
 	select PSA_WANT_KEY_TYPE_AES
 	select PSA_WANT_ALG_CMAC
 	select PSA_WANT_ALG_CTR
