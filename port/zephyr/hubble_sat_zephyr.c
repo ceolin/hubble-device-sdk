@@ -32,7 +32,7 @@ static inline int16_t _time_offset_get_ms(void)
 }
 
 int hubble_sat_port_packet_send(const struct hubble_sat_packet *packet,
-				uint8_t retries, uint8_t interval_s)
+				uint16_t retries, uint8_t interval_s)
 {
 	int ret;
 

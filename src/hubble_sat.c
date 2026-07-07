@@ -69,33 +69,33 @@ uint32_t hubble_internal_time_drift_get(void)
 	return (uint32_t)HUBBLE_MIN(_SAT_MAX_TIME_DRIFT_MSEC, drift_ms);
 }
 
-static uint8_t _additional_retries_count(uint8_t interval_s)
+static uint16_t _retries_get(uint8_t retries_base, uint8_t interval_s)
 {
-	uint8_t ret;
+	uint16_t ret;
 	uint32_t drift_ms;
 
 	if (interval_s == 0U) {
-		return 0;
+		return retries_base;
 	}
 
 	drift_ms = hubble_internal_time_drift_get();
 
 	HUBBLE_LOG_DEBUG("Time drift since last sync: %u ms", drift_ms);
 
-	ret = HUBBLE_MIN(UINT8_MAX, drift_ms / (1000U * interval_s));
+	ret =  retries_base + drift_ms / (1000U * interval_s);
 
-	HUBBLE_LOG_DEBUG("Number of additional retries due TDR: %u", ret);
+	HUBBLE_LOG_DEBUG("Number of retries (acccounting TDR): %u", ret);
 
 	return ret;
 }
 
 uint32_t hubble_internal_sat_transmission_period_get(void)
 {
-	uint8_t additional_retries =
-		_additional_retries_count(_SAT_RETRANSMISSION_INTERVAL_NORMAL_S);
+	uint16_t retries =
+		_retries_get(_SAT_RETRANSMISSION_RETRIES_NORMAL, _SAT_RETRANSMISSION_INTERVAL_NORMAL_S);
 
 	/* x1000U to return the interval in ms */
-	return ((_SAT_RETRANSMISSION_RETRIES_NORMAL + additional_retries) *
+	return (retries *
 		_SAT_RETRANSMISSION_INTERVAL_NORMAL_S) *
 	       1000U;
 }
@@ -120,7 +120,8 @@ int hubble_sat_packet_send(const struct hubble_sat_packet *packet,
 			   enum hubble_sat_transmission_mode mode)
 {
 	int ret;
-	uint8_t interval_s, retries;
+	uint8_t interval_s;
+	uint16_t retries;
 
 	if (packet == NULL) {
 		return -EINVAL;
@@ -132,8 +133,7 @@ int hubble_sat_packet_send(const struct hubble_sat_packet *packet,
 		return ret;
 	}
 
-	retries = HUBBLE_MIN(UINT8_MAX,
-			     retries + _additional_retries_count(interval_s));
+	retries = _retries_get(retries, interval_s);
 
 	HUBBLE_LOG_DEBUG("Number of retries: %u - interval: %u seconds",
 			 retries, interval_s);

@@ -93,7 +93,7 @@ int hubble_sat_port_init(void);
  * @return 0 on successful transmission, negative error code on failure.
  */
 int hubble_sat_port_packet_send(const struct hubble_sat_packet *packet,
-				uint8_t retries, uint8_t interval_s);
+				uint16_t retries, uint8_t interval_s);
 
 /**
  * @brief Transmit a DTM test packet over the satellite radio.
