@@ -7,6 +7,7 @@
 /* Test the bitarray functions */
 
 #include <zephyr/ztest.h>
+#include <zephyr/sys/byteorder.h>
 
 #include <utils/bitarray.h>
 
@@ -26,6 +27,8 @@ ZTEST(bitarray, test_overflow)
 	/* Ok, any attempt to append more data should fail */
 	zassert_not_ok(
 		hubble_bitarray_append(&bit_array, &data, sizeof(data) * 8));
+	zassert_not_ok(
+		hubble_bitarray_append_big(&bit_array, &data, sizeof(data) * 8));
 }
 
 ZTEST(bitarray, test_invalid_access)
@@ -39,6 +42,8 @@ ZTEST(bitarray, test_invalid_access)
 	zassert_equal(hubble_bitarray_get_bit(&bit_array, INT_MAX), -EINVAL);
 	zassert_ok(hubble_bitarray_append(&bit_array, &data, sizeof(data) * 8));
 	zassert_equal(hubble_bitarray_get_bit(&bit_array, INT_MAX), -EINVAL);
+
+	zassert_equal(hubble_bitarray_set_bit(&bit_array, INT_MAX, 0), -EINVAL);
 }
 
 ZTEST(bitarray, test_regular_usage)
@@ -75,6 +80,32 @@ ZTEST(bitarray, test_regular_usage)
 	/* We have changed the bit in index 1 to 0 */
 
 	zassert_equal(test, 0xf0fd);
+
+	zassert_equal(hubble_bitarray_set_bit(&bit_array, 0, 1), 0);
+	zassert_equal(hubble_bitarray_get_bit(&bit_array, 0), 1);
+
+	/* Test big endian API */
+	hubble_bitarray_init(&bit_array);
+	test = sys_cpu_to_be16(0xa6fc);
+
+	hubble_bitarray_append_big(&bit_array, (uint8_t *)&test, 16);
+	test = 0x0000;
+	for (int i = 0, j = 15; i < 16; i++, j--) {
+		int bit = hubble_bitarray_get_bit(&bit_array, i);
+		test |= (bit << j);
+	}
+	zassert_equal(test, 0xa6fc);
+
+	/* Lets just test half byte using append big endian */
+	hubble_bitarray_init(&bit_array);
+	test = sys_cpu_to_be16(0xa6fc);
+	hubble_bitarray_append_big(&bit_array, (uint8_t *)&test, 4);
+	test = 0x0000;
+	for (int i = 0, j = 3; i < 4; i++, j--) {
+		int bit = hubble_bitarray_get_bit(&bit_array, i);
+		test |= (bit << j);
+	}
+	zassert_equal(test, 0x6);
 }
 
 ZTEST_SUITE(bitarray, NULL, NULL, NULL, NULL, NULL);
