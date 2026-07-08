@@ -91,6 +91,24 @@
 #endif
 
 /*
+ * Initialize the radio via the FreeRTOS Timer/Daemon task startup hook
+ * (vApplicationDaemonTaskStartupHook). When enabled, board initialization
+ * runs at the start of the timer task — after the scheduler is running but
+ * before any timer callbacks fire — which satisfies the RCL driver requirement
+ * that RCL_init / RCL_open are called from a task context. Also enables
+ * configUSE_DAEMON_TASK_STARTUP_HOOK so FreeRTOS calls the hook.
+ *
+ * When disabled, the application must call hubble_sat_board_init() from a
+ * task context itself before using satellite network or Bluetooth functionality.
+ *
+ * Default: enabled when CONFIG_HUBBLE_SAT_NETWORK is defined.
+ */
+#ifndef CONFIG_HUBBLE_FREERTOS_DAEMON_HOOK
+#define CONFIG_HUBBLE_FREERTOS_DAEMON_HOOK 1
+#define configUSE_DAEMON_TASK_STARTUP_HOOK
+#endif
+
+/*
  * DTM Mode
  * Enable DTM (Direct Test Mode) in the SDK, this is intended
  * to test the operation of the radio.

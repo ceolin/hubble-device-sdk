@@ -136,24 +136,9 @@ static int hubble_dmm_init(void)
 }
 #endif
 
-/* TODO: make sure that the init is only called once during a lifetime of the application */
-int hubble_sat_board_init(void)
+static inline int _board_init(void)
 {
 	int ret = 0;
-
-	_transmit_sem = xSemaphoreCreateBinary();
-	if (_transmit_sem == NULL) {
-		return -ENOMEM;
-	}
-
-	/* Make count to 1 initially */
-	if (xSemaphoreGive(_transmit_sem) != pdTRUE) {
-		vSemaphoreDelete(_transmit_sem);
-
-		_transmit_sem = NULL;
-
-		return -EAGAIN;
-	}
 
 #if defined(USE_DMM_OVRDE)
 	DMMSch_RCL_init();
@@ -169,7 +154,6 @@ int hubble_sat_board_init(void)
 #endif
 
 	if (rcl_handle == NULL) {
-		/* TODO: clean up the sem */
 		return -EIO;
 	}
 
@@ -191,6 +175,38 @@ int hubble_sat_board_init(void)
 	rclPacketTxCmdGenericTxTest_ble_custom.config.sendCw = 1U;
 
 	return ret;
+}
+
+#ifdef CONFIG_HUBBLE_FREERTOS_DAEMON_HOOK
+void vApplicationDaemonTaskStartupHook(void)
+{
+	(void)_board_init();
+}
+#endif
+
+/* TODO: make sure that the init is only called once during a lifetime of the application */
+int hubble_sat_board_init(void)
+{
+	_transmit_sem = xSemaphoreCreateBinary();
+	if (_transmit_sem == NULL) {
+		return -ENOMEM;
+	}
+
+	/* Make count to 1 initially */
+	if (xSemaphoreGive(_transmit_sem) != pdTRUE) {
+		vSemaphoreDelete(_transmit_sem);
+
+		_transmit_sem = NULL;
+
+		return -EAGAIN;
+	}
+
+#ifndef CONFIG_HUBBLE_FREERTOS_DAEMON_HOOK
+	return _board_init();
+#else
+	/* If the radio was properly configured, we must have a valid RCL handle here. */
+	return rcl_handle != NULL ? 0 : -EIO;
+#endif
 }
 
 int hubble_sat_board_enable(void)

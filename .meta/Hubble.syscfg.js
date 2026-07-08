@@ -96,6 +96,11 @@ function getOpts(mod) {
         if (hubble.dtmMode) {
             result.push(`-DCONFIG_HUBBLE_SAT_NETWORK_DTM_MODE`);
         }
+
+        if (hubble.useFreeRTOSDaemonHook) {
+            result.push(`-DconfigUSE_DAEMON_TASK_STARTUP_HOOK`);
+            result.push(`-DCONFIG_HUBBLE_FREERTOS_DAEMON_HOOK`);
+        }
     }
 
     if (hubble.useTerrestrial) {
@@ -357,6 +362,17 @@ needed to verify time-dependent behavior.
 `,
                 default: false
             },
+            {
+                name: "useFreeRTOSDaemonHook",
+                displayName: "Use FreeRTOS Daemon Hook to init radio",
+                description: `
+Use FreeRTOS daemon task startup hook to automatically configure the device
+radio. If that is not set the application must call hubble_init() before using
+Bluetooth or the Hubble APIs.
+`,
+                default: true,
+                hidden: true
+            },
         ]
     },
     templates: {
@@ -377,6 +393,7 @@ function onUseSatelliteChange(inst, ui)
 {
     ui.deviceTDR.hidden = !inst.useSatellite;
     ui.dtmMode.hidden = !inst.useSatellite;
+    ui.useFreeRTOSDaemonHook.hidden = !inst.useSatellite;
 
     // reset so a stale "true" can't leak when sat is disabled
     if (!inst.useSatellite) {
