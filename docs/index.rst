@@ -99,5 +99,6 @@ Additional Resources
    :hidden:
    :caption: Reference
 
+   api/index
    configuration/index
 
