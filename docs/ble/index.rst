@@ -88,11 +88,4 @@ interaction within the network:
 
    int hubble_ble_advertise_get(const uint8_t *input, size_t input_len, uint8_t *out, size_t *out_len);
 
-API Reference
-*************
-
-.. toctree::
-   :maxdepth: 1
-   :glob:
-
-   api.rst
+The full API is documented in the :ref:`hubble_ble_api` reference.

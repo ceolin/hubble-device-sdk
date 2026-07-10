@@ -52,6 +52,10 @@ primary_domain = "c"
 pygments_style = "sphinx"
 highlight_language = "none"
 
+# Keep domain objects (C function/struct signatures documented by breathe) out
+# of the sidebar navigation TOC. They are still rendered in the page body.
+toc_object_entries = False
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 

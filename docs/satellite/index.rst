@@ -551,14 +551,13 @@ Important related options include:
   size selection.
 * ``CONFIG_HUBBLE_NETWORK_CRYPTO_*`` for crypto backend selection.
 
-See :ref:`hubble_configuration` for the complete configuration reference.
+See :ref:`hubble_configuration` for the complete configuration reference. The
+full satellite API is documented in the :ref:`hubble_sat_api` reference.
 
-API Reference
+Board Support
 *************
 
 .. toctree::
    :maxdepth: 1
-   :glob:
 
-   api.rst
    board-support

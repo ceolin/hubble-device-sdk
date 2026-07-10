@@ -1,10 +1,10 @@
-.. _hubble_ble_api:
+.. _hubble_core_api:
 
-BLE Network API Reference
-#########################
+Core API
+########
 
-.. doxygengroup:: hubble_ble_api
-   :project: HubbleNetworkSDK
+The core API provides the initialization, time, and key-management functions
+shared by every Hubble Network SDK network.
 
 .. doxygengroup:: hubble_api
    :project: HubbleNetworkSDK
@@ -15,4 +15,3 @@ BLE Network API Reference
 .. doxygengroup:: hubble_crypto
    :project: HubbleNetworkSDK
    :members:
-
