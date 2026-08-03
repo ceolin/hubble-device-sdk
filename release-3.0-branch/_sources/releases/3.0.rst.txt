@@ -122,7 +122,7 @@ New samples shipping with 3.0.0:
 - **FreeRTOS / TI**: ``sat-continuous``, ``sat-dtm``, and ``sat-dual-stack``.
 
 Documentation
-*****************
+*************
 
 - New Satellite Network overview, plus dedicated reliability, clock-drift, and
   board-support pages.
