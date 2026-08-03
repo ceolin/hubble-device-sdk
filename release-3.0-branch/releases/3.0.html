@@ -444,6 +444,22 @@ to a later <code class="xref c c-func docutils literal notranslate"><span class=
 data.</p></li>
 </ul>
 </section>
+<section id="device-configuration-vector-hdcv">
+<h3>Device Configuration Vector (HDCV)<a class="headerlink" href="#device-configuration-vector-hdcv" title="Link to this heading"></a></h3>
+<p>A new Hubble Device Configuration Vector (HDCV) API reports a device’s
+build-time configuration as a compact, versioned string, for example
+<code class="docutils literal notranslate"><span class="pre">HDCV:1.0/E:256/CS:UT/RP:S86400/N:T/TV:1</span></code>:</p>
+<ul class="simple">
+<li><p><code class="xref c c-func docutils literal notranslate"><span class="pre">hubble_config_vector_get()</span></code> returns this build’s HDCV string. It
+encodes key size, EID counter source and rotation period, and which
+networks (terrestrial, satellite, or both) and protocol versions are
+compiled in, so it can be logged, stored, or reported without any extra
+configuration.</p></li>
+<li><p><code class="xref c c-func docutils literal notranslate"><span class="pre">hubble_config_vector_check()</span></code> compares a stored or reported HDCV
+string against the running build’s vector, letting an application
+confirm a device is still configured as expected.</p></li>
+</ul>
+</section>
 </section>
 <section id="sample-applications">
 <h2>Sample Applications<a class="headerlink" href="#sample-applications" title="Link to this heading"></a></h2>
@@ -483,6 +499,12 @@ the pass result, and computing multiple upcoming passes.</p></li>
 <code class="xref c c-func docutils literal notranslate"><span class="pre">hubble_sat_dtm_cw_start()</span></code>,
 <code class="xref c c-func docutils literal notranslate"><span class="pre">hubble_sat_dtm_cw_stop()</span></code> — Direct Test Mode controls</p></li>
 </ul>
+<p>Device Configuration Vector API:</p>
+<ul class="simple">
+<li><p><code class="xref c c-func docutils literal notranslate"><span class="pre">hubble_config_vector_get()</span></code> — get this build’s HDCV string</p></li>
+<li><p><code class="xref c c-func docutils literal notranslate"><span class="pre">hubble_config_vector_check()</span></code> — check a device’s HDCV against this
+build’s vector</p></li>
+</ul>
 </section>
 <section id="compatibility">
 <h2>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading"></a></h2>
@@ -499,6 +521,8 @@ Network API are stable within the 3.x series.</p></li>
 <li><p>Unit tests for EID generation in both counter source modes</p></li>
 <li><p>Satellite packet encoding, frame-splitting, and payload-length validation tests</p></li>
 <li><p>Pass-prediction (ephemeris) unit tests</p></li>
+<li><p>HDCV generation and matching, including mismatched, truncated, and malformed
+vectors</p></li>
 <li><p>Platform-specific CI builds: Zephyr, FreeRTOS (TI), ESP-IDF and NCS (nRF Connect SDK)</p></li>
 </ul>
 </section>

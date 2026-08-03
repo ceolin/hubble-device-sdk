@@ -95,6 +95,22 @@ Terrestrial (BLE) Network
 - New ``ble-beacon-mfg-data`` sample demonstrates advertising with manufacturer
   data.
 
+Device Configuration Vector (HDCV)
+===================================
+
+A new Hubble Device Configuration Vector (HDCV) API reports a device's
+build-time configuration as a compact, versioned string, for example
+``HDCV:1.0/E:256/CS:UT/RP:S86400/N:T/TV:1``:
+
+- :c:func:`hubble_config_vector_get` returns this build's HDCV string. It
+  encodes key size, EID counter source and rotation period, and which
+  networks (terrestrial, satellite, or both) and protocol versions are
+  compiled in, so it can be logged, stored, or reported without any extra
+  configuration.
+- :c:func:`hubble_config_vector_check` compares a stored or reported HDCV
+  string against the running build's vector, letting an application
+  confirm a device is still configured as expected.
+
 Sample Applications
 *******************
 
@@ -133,6 +149,12 @@ Satellite Network APIs:
   :c:func:`hubble_sat_dtm_cw_start`,
   :c:func:`hubble_sat_dtm_cw_stop` — Direct Test Mode controls
 
+Device Configuration Vector API:
+
+- :c:func:`hubble_config_vector_get` — get this build's HDCV string
+- :c:func:`hubble_config_vector_check` — check a device's HDCV against this
+  build's vector
+
 Compatibility
 *************
 
@@ -148,4 +170,6 @@ This release has been validated through:
 - Unit tests for EID generation in both counter source modes
 - Satellite packet encoding, frame-splitting, and payload-length validation tests
 - Pass-prediction (ephemeris) unit tests
+- HDCV generation and matching, including mismatched, truncated, and malformed
+  vectors
 - Platform-specific CI builds: Zephyr, FreeRTOS (TI), ESP-IDF and NCS (nRF Connect SDK)
