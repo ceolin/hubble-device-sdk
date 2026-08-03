@@ -103,11 +103,10 @@ New samples shipping with 3.0.0:
 - **ESP-IDF**: ``sat-continuous``, ``sat-dtm``, and ``sat-dual-stack``.
 - **Zephyr**: ``sat-dual-stack``, ``sat-dtm``, ``sat-continuous`` (with board
   overlays, including Silicon Labs xG24 dev boards), and ``ble-beacon-mfg-data``.
-- **FreeRTOS / TI**: ``ble-beacon``, ``sat-continuous``, ``sat-dtm``, and
-  ``sat-dual-stack``.
+- **FreeRTOS / TI**: ``sat-continuous``, ``sat-dtm``, and ``sat-dual-stack``.
 
 Documentation
-=============
+*****************
 
 - New Satellite Network overview, plus dedicated reliability, clock-drift, and
   board-support pages.
@@ -124,7 +123,7 @@ Satellite Network APIs:
 
 - :c:func:`hubble_sat_packet_get` — build a packet from payload bytes
 - :c:func:`hubble_sat_packet_frames_get` — split a packet into radio frames
-- :c:func:`hubble_sat_packet_send` — transmit a packet via satellite
+- :c:func:`hubble_sat_packet_send` — transmit a packet to satellite
 - :c:func:`hubble_sat_satellites_set` — configure orbital parameters
 - :c:func:`hubble_sat_next_pass_get` — predict the next pass over a point
 - :c:func:`hubble_sat_next_pass_region_get` — predict the next pass over a region
@@ -149,11 +148,4 @@ This release has been validated through:
 - Unit tests for EID generation in both counter source modes
 - Satellite packet encoding, frame-splitting, and payload-length validation tests
 - Pass-prediction (ephemeris) unit tests
-- Platform-specific CI builds: Zephyr (QEMU, native_sim), FreeRTOS (TI), ESP-IDF
-
-Support
-*******
-
-- **Documentation**: https://hubble.com/docs/device-sdk/intro
-- **GitHub Repository**: https://github.com/hubblenetwork/hubble-device-sdk
-- **Issues**: Report issues via GitHub Issues
+- Platform-specific CI builds: Zephyr, FreeRTOS (TI), ESP-IDF and NCS (nRF Connect SDK)
