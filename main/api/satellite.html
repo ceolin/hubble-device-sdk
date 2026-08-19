@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=88a7a105" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d42fa807" />
 
   
     <link rel="shortcut icon" href="../_static/hubble.png"/>
@@ -24,6 +24,7 @@
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/js/version-selector.js?v=f9710a61"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
@@ -34,7 +35,9 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Configuration Options" href="../configuration/index.html" />
     <link rel="prev" title="BLE Network API" href="ble.html" />
+  <meta name="docs-base-path" content="/hubble-device-sdk/">
   <meta name="color-scheme" content="dark light">
+  <meta name="algolia-site-verification" content="5A89F681C1955ED8" />
   
   <noscript id="dark-mode-toggle-stylesheets">
     <link rel="stylesheet" href="../_static/css/light.css" type="text/css" media="(prefers-color-scheme: light)"/>
@@ -100,6 +103,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#key-features">Key Features</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../terrestrial/index.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../terrestrial/index.html#advertising-packet">Advertising Packet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#packet-header">Packet Header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#addressing">Addressing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#payload-structure">Payload Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#customer-payload">Customer Payload</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../terrestrial/index.html#api-overview">API Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#initialization">Initialization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#time-management">Time Management</a></li>
@@ -107,6 +118,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../terrestrial/index.html#advertisement-retrieval">Advertisement Retrieval</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../terrestrial/index.html#common-api-workflow">Common API Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../terrestrial/index.html#configuration-notes">Configuration Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../satellite/index.html">Satellite Network Overview</a><ul>
@@ -160,6 +173,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../quickstart/esp-idf/index.html">ESP-IDF</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../quickstart/esp-idf/index.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../quickstart/esp-idf/index.html#adding-hubble-network-to-an-esp-idf-project">Adding Hubble Network to an ESP-IDF Project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart/esp-idf/index.html#enabling-hubble-modules">Enabling Hubble Modules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../quickstart/esp-idf/index.html#satellite-network-on-esp32-c6-required-phy-blob">Satellite Network on ESP32-C6: Required PHY Blob</a></li>
 </ul>
 </li>
@@ -207,6 +221,21 @@
 <li class="toctree-l3"><a class="reference internal" href="../integration_guides/ti/index.html#verifying-the-application">Verifying the Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../integration_guides/ti/index.html#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../integration_guides/ti/index.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../integration_guides/esp-idf/index.html">ESP-IDF Integration Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#supported-devices-and-sdk-version">Supported Devices and SDK Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#create-your-hubble-account">Create your Hubble Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#sdk-setup">SDK Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#project-configuration">Project Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#preparing-for-satellite-transmission">Preparing for Satellite Transmission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#initializing-the-hubble-device-sdk">Initializing the Hubble Device SDK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#the-pass-prediction-loop">The Pass Prediction Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#building-and-flashing">Building and Flashing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#verifying-the-application">Verifying the Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../integration_guides/esp-idf/index.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 </ul>
@@ -280,6 +309,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../releases/index.html#migration-and-upgrade-guidance">Migration and Upgrade Guidance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../releases/index.html#release-notes">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../releases/3.0.html">Release 3.0.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../releases/2.0.html">Release 2.0.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../releases/1.0.html">Release 1.0.0</a></li>
 </ul>
@@ -352,10 +382,6 @@
 <dt class="sig sig-object cpp">
 <span class="target" id="group__hubble__sat__api"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">Satellite</span> <span class="pre">Network</span> <span class="pre">Function</span> <span class="pre">APIs</span></span></dt>
 <dd><p>Hubble Sat Network Function APIs. </p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The satellite functionality is currently in pre-production and is not yet ready for production deployments. APIs and behavior may change in future releases. </p>
-</div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
 <dl class="cpp enum">
@@ -472,6 +498,10 @@ The drift is estimated from the device’s Time Drift Rate (TDR), configured thr
 <span id="_CPPv331hubble_sat_next_pass_region_get8uint64_tPK24hubble_sat_device_regionP20hubble_sat_pass_info"></span><span id="_CPPv231hubble_sat_next_pass_region_get8uint64_tPK24hubble_sat_device_regionP20hubble_sat_pass_info"></span><span id="hubble_sat_next_pass_region_get__uint64_t.hubble_sat_device_regionCP.hubble_sat_pass_infoP"></span><span class="target" id="group__hubble__sat__api_1gaf516cb7d90a2a3ce5e1d389de057c28c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">hubble_sat_next_pass_region_get</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">t</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv424hubble_sat_device_region" title="hubble_sat_device_region"><span class="n"><span class="pre">hubble_sat_device_region</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">region</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv420hubble_sat_pass_info" title="hubble_sat_pass_info"><span class="n"><span class="pre">hubble_sat_pass_info</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pass</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431hubble_sat_next_pass_region_get8uint64_tPK24hubble_sat_device_regionP20hubble_sat_pass_info" title="Link to this definition"></a><br /></dt>
 <dd><p>Get the next satellite pass over a geographic region. </p>
 <p>This function calculates the next pass of a satellite over a rectangular geographic region defined by latitude and longitude bounds, based on satellites orbital parameters.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Experimental API.</strong> This interface may change or be removed in any release.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1003,7 +1033,7 @@ The drift is estimated from the device’s Time Drift Rate (TDR), configured thr
 
   <div role="contentinfo">
 <p>
-  &#169; Copyright 2025, Hubble Network, Inc.</p>
+  &#169; Copyright 2025-2026, Hubble Network, Inc.</p>
 
   </div>
 

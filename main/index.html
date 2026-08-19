@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=88a7a105" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=d42fa807" />
 
   
     <link rel="shortcut icon" href="_static/hubble.png"/>
@@ -24,6 +24,7 @@
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/js/version-selector.js?v=f9710a61"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
@@ -33,7 +34,9 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Introduction" href="introduction/index.html" />
+  <meta name="docs-base-path" content="/hubble-device-sdk/">
   <meta name="color-scheme" content="dark light">
+  <meta name="algolia-site-verification" content="5A89F681C1955ED8" />
   
   <noscript id="dark-mode-toggle-stylesheets">
     <link rel="stylesheet" href="_static/css/light.css" type="text/css" media="(prefers-color-scheme: light)"/>
@@ -99,6 +102,14 @@
 <li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#key-features">Key Features</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="terrestrial/index.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrestrial/index.html#advertising-packet">Advertising Packet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#packet-header">Packet Header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#addressing">Addressing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#payload-structure">Payload Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#customer-payload">Customer Payload</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="terrestrial/index.html#api-overview">API Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#initialization">Initialization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#time-management">Time Management</a></li>
@@ -106,6 +117,8 @@
 <li class="toctree-l3"><a class="reference internal" href="terrestrial/index.html#advertisement-retrieval">Advertisement Retrieval</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="terrestrial/index.html#common-api-workflow">Common API Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terrestrial/index.html#configuration-notes">Configuration Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="satellite/index.html">Satellite Network Overview</a><ul>
@@ -159,6 +172,7 @@
 <li class="toctree-l2"><a class="reference internal" href="quickstart/esp-idf/index.html">ESP-IDF</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="quickstart/esp-idf/index.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart/esp-idf/index.html#adding-hubble-network-to-an-esp-idf-project">Adding Hubble Network to an ESP-IDF Project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart/esp-idf/index.html#enabling-hubble-modules">Enabling Hubble Modules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="quickstart/esp-idf/index.html#satellite-network-on-esp32-c6-required-phy-blob">Satellite Network on ESP32-C6: Required PHY Blob</a></li>
 </ul>
 </li>
@@ -206,6 +220,21 @@
 <li class="toctree-l3"><a class="reference internal" href="integration_guides/ti/index.html#verifying-the-application">Verifying the Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="integration_guides/ti/index.html#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="integration_guides/ti/index.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="integration_guides/esp-idf/index.html">ESP-IDF Integration Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#supported-devices-and-sdk-version">Supported Devices and SDK Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#create-your-hubble-account">Create your Hubble Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#sdk-setup">SDK Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#project-configuration">Project Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#preparing-for-satellite-transmission">Preparing for Satellite Transmission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#initializing-the-hubble-device-sdk">Initializing the Hubble Device SDK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#the-pass-prediction-loop">The Pass Prediction Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#building-and-flashing">Building and Flashing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#verifying-the-application">Verifying the Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="integration_guides/esp-idf/index.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 </ul>
@@ -279,6 +308,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="releases/index.html#migration-and-upgrade-guidance">Migration and Upgrade Guidance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases/index.html#release-notes">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="releases/3.0.html">Release 3.0.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="releases/2.0.html">Release 2.0.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="releases/1.0.html">Release 1.0.0</a></li>
 </ul>
@@ -349,6 +379,19 @@ Hubble APIs with your application or service and begin leveraging the Hubble
 Network. Designed for developers who want a straightforward and reliable way to
 harness Hubble’s powerful capabilities, this SDK provides a suite of tools and
 libraries that make it easy to interact with all of Hubble’s services.</p>
+<section id="create-your-hubble-account">
+<h2>Create your Hubble Account<a class="headerlink" href="#create-your-hubble-account" title="Link to this heading"></a></h2>
+<p>To register a device on the network, you’ll need a Hubble account — sign up for
+free at <a class="reference external" href="https://dash.hubble.com/create-account">dash.hubble.com</a> if you don’t
+already have one.</p>
+<p>From there you can <a class="reference external" href="https://hubble.com/docs/guides/cloud-integration/register-devices">register a device</a> and start
+receiving its data over the cloud.</p>
+<ul class="simple">
+<li><p>In the Dashboard: Use “Add a Device” to generate a device key.</p></li>
+<li><p>Via API: Use the <a class="reference external" href="https://hubble.com/docs/api-specification/hubble-platform-api">Cloud API</a>, with an API
+token and Org ID from your Dashboard.</p></li>
+</ul>
+</section>
 <section id="using-hubble-device-sdk">
 <h2>Using Hubble Device SDK<a class="headerlink" href="#using-hubble-device-sdk" title="Link to this heading"></a></h2>
 <table class="docutils align-default" id="id1">
@@ -418,9 +461,16 @@ libraries that make it easy to interact with all of Hubble’s services.</p>
     <li class="grid-item">
         <a href="satellite/index.html">
             <span class="grid-icon fa fa-wifi"></span>
-            <h2>Satellite Network (Pre-Production)</h2>
+            <h2>Satellite Network</h2>
         </a>
         <p>Satellite Network, build &amp; run a sample application</p>
+    </li>
+    <li class="grid-item">
+        <a href="https://dash.hubble.com">
+            <span class="grid-icon grid-icon-hubble"></span>
+            <h2>Hubble Dashboard</h2>
+        </a>
+        <p>Register devices, view device data, manage users, setup your backend integration.</p>
     </li>
 </ul><div class="toctree-wrapper compound">
 </div>
@@ -441,7 +491,7 @@ libraries that make it easy to interact with all of Hubble’s services.</p>
 
   <div role="contentinfo">
 <p>
-  &#169; Copyright 2025, Hubble Network, Inc.</p>
+  &#169; Copyright 2025-2026, Hubble Network, Inc.</p>
 
   </div>
 

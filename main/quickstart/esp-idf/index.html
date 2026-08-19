@@ -12,7 +12,7 @@
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=88a7a105" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=d42fa807" />
 
   
     <link rel="shortcut icon" href="../../_static/hubble.png"/>
@@ -24,6 +24,7 @@
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/js/version-selector.js?v=f9710a61"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
       <script>let toggleOpenOnPrint = 'true';</script>
@@ -34,7 +35,9 @@
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Bare Metal" href="../bare-metal/index.html" />
     <link rel="prev" title="TI SDK (SysConfig)" href="../ti/index.html" />
+  <meta name="docs-base-path" content="/hubble-device-sdk/">
   <meta name="color-scheme" content="dark light">
+  <meta name="algolia-site-verification" content="5A89F681C1955ED8" />
   
   <noscript id="dark-mode-toggle-stylesheets">
     <link rel="stylesheet" href="../../_static/css/light.css" type="text/css" media="(prefers-color-scheme: light)"/>
@@ -100,6 +103,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#key-features">Key Features</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../terrestrial/index.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../terrestrial/index.html#advertising-packet">Advertising Packet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#packet-header">Packet Header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#addressing">Addressing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#payload-structure">Payload Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#customer-payload">Customer Payload</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../terrestrial/index.html#api-overview">API Overview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#initialization">Initialization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#time-management">Time Management</a></li>
@@ -107,6 +118,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../terrestrial/index.html#advertisement-retrieval">Advertisement Retrieval</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../terrestrial/index.html#common-api-workflow">Common API Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../terrestrial/index.html#configuration-notes">Configuration Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../satellite/index.html">Satellite Network Overview</a><ul>
@@ -160,6 +173,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ESP-IDF</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adding-hubble-network-to-an-esp-idf-project">Adding Hubble Network to an ESP-IDF Project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-hubble-modules">Enabling Hubble Modules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#satellite-network-on-esp32-c6-required-phy-blob">Satellite Network on ESP32-C6: Required PHY Blob</a></li>
 </ul>
 </li>
@@ -207,6 +221,21 @@
 <li class="toctree-l3"><a class="reference internal" href="../../integration_guides/ti/index.html#verifying-the-application">Verifying the Application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../integration_guides/ti/index.html#troubleshooting">Troubleshooting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../integration_guides/ti/index.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../integration_guides/esp-idf/index.html">ESP-IDF Integration Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#supported-devices-and-sdk-version">Supported Devices and SDK Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#create-your-hubble-account">Create your Hubble Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#sdk-setup">SDK Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#project-configuration">Project Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#preparing-for-satellite-transmission">Preparing for Satellite Transmission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#initializing-the-hubble-device-sdk">Initializing the Hubble Device SDK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#the-pass-prediction-loop">The Pass Prediction Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#building-and-flashing">Building and Flashing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#verifying-the-application">Verifying the Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../integration_guides/esp-idf/index.html#next-steps">Next Steps</a></li>
 </ul>
 </li>
 </ul>
@@ -280,6 +309,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../releases/index.html#migration-and-upgrade-guidance">Migration and Upgrade Guidance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../releases/index.html#release-notes">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../releases/3.0.html">Release 3.0.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../releases/2.0.html">Release 2.0.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../releases/1.0.html">Release 1.0.0</a></li>
 </ul>
@@ -348,8 +378,16 @@
 <span id="esp-idf-quick-start"></span><h1>ESP-IDF<a class="headerlink" href="#esp-idf" title="Link to this heading"></a></h1>
 <p>This guide explains how to integrate the Hubble Device SDK into an
 <a class="reference external" href="https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html">ESP-IDF</a>
-project. The SDK ships as an ESP-IDF component that can be pulled into any
-ESP-IDF application via <code class="docutils literal notranslate"><span class="pre">EXTRA_COMPONENT_DIRS</span></code>.</p>
+project. The SDK ships as an ESP-IDF component, and can be added either from
+the <a class="reference external" href="https://components.espressif.com/components/hubblenetwork/hubble-device-sdk">ESP Component Registry</a>
+or from a local copy of the repository.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>This page covers ESP-IDF SDK setup and component integration. For a complete,
+end-to-end <strong>satellite dual-stack</strong> application on ESP32 hardware — pass
+prediction, BLE beaconing, and RF verification — see the
+<a class="reference internal" href="../../integration_guides/esp-idf/index.html#esp-idf-integration-guide"><span class="std std-ref">ESP-IDF Integration Guide</span></a>.</p>
+</div>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
 <ul class="simple">
@@ -358,11 +396,39 @@ installed and exported in the current shell (e.g. <code class="docutils literal 
 <li><p>A supported ESP32 target. The BLE Network module works on any ESP32 chip
 with a Bluetooth® Low Energy controller supported by ESP-IDF. The Satellite
 Network module currently targets the <strong>ESP32-C6</strong>.</p></li>
-<li><p>The Hubble Device SDK cloned or added to your project as a Git submodule.</p></li>
+<li><p>Device <code class="docutils literal notranslate"><span class="pre">key</span></code> (generated when you register a new device to your organization
+through the Hubble Cloud API).</p></li>
 </ul>
 </section>
 <section id="adding-hubble-network-to-an-esp-idf-project">
 <h2>Adding Hubble Network to an ESP-IDF Project<a class="headerlink" href="#adding-hubble-network-to-an-esp-idf-project" title="Link to this heading"></a></h2>
+<section id="option-1-esp-component-registry-recommended">
+<h3>Option 1: ESP Component Registry (recommended)<a class="headerlink" href="#option-1-esp-component-registry-recommended" title="Link to this heading"></a></h3>
+<p>From the root of your project:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># change '^3.0.0' to your desired version of the SDK in the Registry</span>
+idf.py<span class="w"> </span>add-dependency<span class="w"> </span><span class="s2">"hubblenetwork/hubble-device-sdk^3.0.0"</span>
+</pre></div>
+</div>
+<p>This records the dependency in your project’s <code class="docutils literal notranslate"><span class="pre">idf_component.yml</span></code> and
+downloads the SDK into <code class="docutils literal notranslate"><span class="pre">managed_components/</span></code> on the next build. ESP-IDF
+discovers components there automatically, so no <code class="docutils literal notranslate"><span class="pre">EXTRA_COMPONENT_DIRS</span></code>
+entry is needed in your <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>.</p>
+<p>To declare the dependency by hand instead of running <code class="docutils literal notranslate"><span class="pre">add-dependency</span></code>, add it
+to <code class="docutils literal notranslate"><span class="pre">main/idf_component.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dependencies</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">hubblenetwork/hubble-device-sdk</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">^3.0.0</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If your project narrows the build with <code class="docutils literal notranslate"><span class="pre">set(COMPONENTS</span> <span class="pre">...)</span></code>, add the SDK’s
+directory name under <code class="docutils literal notranslate"><span class="pre">managed_components/</span></code> to that list as well because
+anything omitted from <code class="docutils literal notranslate"><span class="pre">set(COMPONENTS</span> <span class="pre">...)</span></code> is excluded from the build.</p>
+</div>
+</section>
+<section id="option-2-local-copy-or-git-submodule">
+<h3>Option 2: Local copy or Git submodule<a class="headerlink" href="#option-2-local-copy-or-git-submodule" title="Link to this heading"></a></h3>
+<p>Use this when building against an unreleased branch not listed in the Registry.</p>
 <ol class="arabic">
 <li><p>Add the Hubble Device SDK to your application, for example as a submodule:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>https://github.com/HubbleNetwork/hubble-device-sdk
@@ -377,9 +443,9 @@ the component list:</p>
 <span class="nb">set</span><span class="p">(</span><span class="s">EXTRA_COMPONENT_DIRS</span><span class="w"> </span><span class="s">path/to/hubble-device-sdk/port/esp-idf/</span><span class="p">)</span>
 
 <span class="nb">set</span><span class="p">(</span><span class="s">COMPONENTS</span>
-<span class="w">        </span><span class="s2">&quot;main&quot;</span>
-<span class="w">        </span><span class="s2">&quot;bt&quot;</span>
-<span class="w">        </span><span class="s2">&quot;hubblenetwork-sdk&quot;</span>
+<span class="w">        </span><span class="s2">"main"</span>
+<span class="w">        </span><span class="s2">"bt"</span>
+<span class="w">        </span><span class="s2">"hubblenetwork-sdk"</span>
 <span class="p">)</span>
 
 <span class="nb">include</span><span class="p">(</span><span class="o">$ENV{</span><span class="nv">IDF_PATH</span><span class="o">}</span><span class="s">/tools/cmake/project.cmake</span><span class="p">)</span>
@@ -388,9 +454,14 @@ the component list:</p>
 </pre></div>
 </div>
 </li>
-<li><p>Enable the desired Hubble modules. Either run <code class="docutils literal notranslate"><span class="pre">idf.py</span> <span class="pre">menuconfig</span></code> and
-toggle them under <em>Component config</em> → <em>Hubble</em>, or set them in your
-project’s <code class="docutils literal notranslate"><span class="pre">sdkconfig.defaults</span></code>:</p>
+</ol>
+</section>
+</section>
+<section id="enabling-hubble-modules">
+<h2>Enabling Hubble Modules<a class="headerlink" href="#enabling-hubble-modules" title="Link to this heading"></a></h2>
+<p>This applies to both options above. Either run <code class="docutils literal notranslate"><span class="pre">idf.py</span> <span class="pre">menuconfig</span></code> and toggle
+the modules under <em>Component config</em> → <em>Hubble</em>, or set them in your project’s
+<code class="docutils literal notranslate"><span class="pre">sdkconfig.defaults</span></code>:</p>
 <div class="highlight-kconfig notranslate"><div class="highlight"><pre><span></span><span class="c1"># Terrestrial (BLE) Network</span>
 CONFIG_HUBBLE_BLE_NETWORK=y
 
@@ -405,8 +476,6 @@ CONFIG_BT_BLE_50_FEATURES_SUPPORTED=n
 CONFIG_BT_BLE_42_FEATURES_SUPPORTED=y
 </pre></div>
 </div>
-</li>
-</ol>
 </section>
 <section id="satellite-network-on-esp32-c6-required-phy-blob">
 <h2>Satellite Network on ESP32-C6: Required PHY Blob<a class="headerlink" href="#satellite-network-on-esp32-c6-required-phy-blob" title="Link to this heading"></a></h2>
@@ -423,7 +492,7 @@ before building any Satellite Network application on the ESP32-C6.</p>
 </li>
 <li><p>Unzip the archive and copy the extracted <code class="docutils literal notranslate"><span class="pre">*.a</span></code> files over the matching
 files in your ESP-IDF installation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>unzip<span class="w"> </span><span class="s2">&quot;libphy_C6_20260317_c83212e.zip&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>unzip<span class="w"> </span><span class="s2">"libphy_C6_20260317_c83212e.zip"</span>
 cp<span class="w"> </span>*.a<span class="w"> </span><span class="nv">$IDF_PATH</span>/components/esp_phy/lib/esp32c6/
 </pre></div>
 </div>
@@ -447,7 +516,7 @@ will consume it directly and the blob swap will no longer be needed.</p>
 
   <div role="contentinfo">
 <p>
-  &#169; Copyright 2025, Hubble Network, Inc.</p>
+  &#169; Copyright 2025-2026, Hubble Network, Inc.</p>
 
   </div>
 
