@@ -68,6 +68,7 @@ jobs:
         with:
           ref: ${{ steps.setref.outputs.ref }}
           fetch-depth: 0
+          path: app
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -79,20 +80,27 @@ jobs:
         uses: zephyrproject-rtos/action-zephyr-setup@v1
         with:
           # west-zephyr-lts.yml pins Zephyr to the v3.7-branch LTS release
-          app-path: .
+          # app-path must be a subdirectory (not ".") so that "zephyr" and
+          # other west projects are checked out inside $GITHUB_WORKSPACE
+          # instead of as siblings of it.
+          app-path: app
           manifest-file-name: west-zephyr-lts.yml
+          sdk-version: 0.17.0
 
       - name: Run tests
+        working-directory: app
         run: |
           set -euxo pipefail
           west twister -T tests/zephyr --quarantine-list tools/ci/twister-quarantine-lts.yaml
 
       - name: Build samples and generates footprint
+        working-directory: app
         run: |
           set -euxo pipefail
           west twister -T samples/zephyr --build-only --footprint-report --quarantine-list tools/ci/twister-quarantine-lts.yaml
 
       - name: Footprint report
+        working-directory: app
         run: |
           set -euxo pipefail
           # Build all Zephyr projects in samples/zephyr directory
@@ -103,5 +111,5 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: footprint-report-lts-${{ github.run_id }}
-          path: twister-out/twister_footprint.json
+          path: app/twister-out/twister_footprint.json
           if-no-files-found: ignore
