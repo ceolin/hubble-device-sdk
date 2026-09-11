@@ -19,7 +19,7 @@
 #endif
 
 int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
-		       const uint8_t *input, size_t input_len,
+		       const uint8_t *data, size_t len,
 		       uint8_t output[HUBBLE_AES_BLOCK_SIZE])
 {
 	int ret;
@@ -48,7 +48,7 @@ int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
 	}
 
 	/* Update the CMAC with the input message */
-	ret = mbedtls_cipher_cmac_update(&ctx, input, input_len);
+	ret = mbedtls_cipher_cmac_update(&ctx, data, len);
 	if (ret != 0) {
 		goto exit;
 	}
