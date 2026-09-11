@@ -21,7 +21,7 @@ void hubble_crypto_zeroize(void *buf, size_t len)
 }
 
 int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
-		       const uint8_t *input, size_t input_len,
+		       const uint8_t *data, size_t len,
 		       uint8_t output[HUBBLE_AES_BLOCK_SIZE])
 {
 	return 0;
