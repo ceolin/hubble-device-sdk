@@ -89,7 +89,7 @@ mac_setup_error:
 }
 
 int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
-		       const uint8_t *input, size_t input_len,
+		       const uint8_t *data, size_t len,
 		       uint8_t output[HUBBLE_AES_BLOCK_SIZE])
 {
 	psa_status_t status;
@@ -114,7 +114,7 @@ int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
 		goto mac_setup_error;
 	}
 
-	status = psa_mac_update(&operation, input, input_len);
+	status = psa_mac_update(&operation, data, len);
 	if (status != PSA_SUCCESS) {
 		goto mac_update_error;
 	}
