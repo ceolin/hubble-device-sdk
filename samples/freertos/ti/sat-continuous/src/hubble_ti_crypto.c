@@ -36,7 +36,7 @@ void hubble_crypto_zeroize(void *buf, size_t len)
 }
 
 int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
-		       const uint8_t *input, size_t input_len,
+		       const uint8_t *data, size_t len,
 		       uint8_t output[HUBBLE_AES_BLOCK_SIZE])
 {
 	int ret;
@@ -47,7 +47,7 @@ int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
 	int16_t verificationResult;
 	uint8_t input_aligned[_BUFFER_SIZE] ALIGNED;
 
-	if (input_len >= _BUFFER_SIZE) {
+	if (len >= _BUFFER_SIZE) {
 		return -EINVAL;
 	}
 
@@ -60,11 +60,11 @@ int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
 		return -1;
 	}
 
-	memcpy(input_aligned, input, input_len);
+	memcpy(input_aligned, data, len);
 
 	AESCMAC_Operation_init(&operation);
 	operation.input = (uint8_t *)input_aligned;
-	operation.inputLength = input_len;
+	operation.inputLength = len;
 	operation.mac = output;
 	operation.macLength = HUBBLE_AES_BLOCK_SIZE;
 
@@ -73,7 +73,7 @@ int hubble_crypto_cmac(const uint8_t key[CONFIG_HUBBLE_KEY_SIZE],
 	ret = AESCMAC_oneStepSign(handle, &operation, &cryptoKey);
 	AESCMAC_close(handle);
 
-	hubble_crypto_zeroize(input_aligned, input_len);
+	hubble_crypto_zeroize(input_aligned, len);
 
 	return ret;
 }
